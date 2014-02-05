@@ -30,5 +30,6 @@ with open('../data/heartrate_all.csv', 'rb') as csvfile:
 		result.extend(arr)
 	with open('../data/heartrate_full.csv', 'wb') as csvfile2:
 		csvWriter = csv.writer(csvfile2)
+		csvWriter.writerow(['date','heartrate'])
 		for line in zip(['%02d:%02d' % (i/60, i%60) for i in range(1440)], result[:1440]):
 			csvWriter.writerow(line)
