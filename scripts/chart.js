@@ -25,6 +25,10 @@
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d.steps); });
 
+  var floorArea = d3.svg.line()
+      .x(function(d) { return x(d.date); })
+      .y(function(d) { return y(d.floors*25); });
+
   var heartRateArea = d3.svg.line()
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d.heartrate); });
@@ -60,56 +64,71 @@
       d.steps = +d.value;
     });
 
-    d3.csv("../data/heartrate_full.csv", type, function(error, data2) {
+    d3.json("data/fitbit_floors.json", function(error, data2) {
 
-    x.domain(d3.extent(data.map(function(d) { return d.date; })));
-    y.domain([0, d3.max(data.map(function(d) { return d.steps; }))]);
-    x2.domain(x.domain());
-    y2.domain(y.domain());
+        data2.forEach(function(d) {
+          d.date = parseDateFitbit(d.date);
+          d.floors = +d.value;
+        });
 
-    focus.append("path")
-        .datum(data)
-        .attr("class", "steps")
-        .attr("d", stepArea);
+        d3.csv("../data/heartrate_full.csv", type, function(error, data3) {
 
-    focus.append("path")
-        .datum(data2)
-        .attr("class", "heartrate")
-        .attr("d", heartRateArea);
+        x.domain(d3.extent(data.map(function(d) { return d.date; })));
+        y.domain([0, d3.max(data.map(function(d) { return d.steps; }))]);
+        x2.domain(x.domain());
+        y2.domain(y.domain());
 
-    focus.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
+        focus.append("path")
+            .datum(data)
+            .attr("class", "steps")
+            .attr("d", stepArea);
 
-    focus.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
+        focus.append("path")
+            .datum(data2)
+            .attr("class", "floors")
+            .attr("d", floorArea);
 
-    context.append("path")
-        .datum(data)
-        .attr("class", "steps")
-        .attr("d", minimap);
+        focus.append("path")
+            .datum(data3)
+            .attr("class", "heartrate")
+            .attr("d", heartRateArea);
 
-    context.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height2 + ")")
-        .call(xAxis2);
+        focus.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
 
-    context.append("g")
-        .attr("class", "x brush")
-        .call(brush)
-      .selectAll("rect")
-        .attr("y", -6)
-        .attr("height", height2 + 7);
+        focus.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
 
-    });
+        context.append("path")
+            .datum(data)
+            .attr("class", "steps")
+            .attr("d", minimap);
+
+        context.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height2 + ")")
+            .call(xAxis2);
+
+        context.append("g")
+            .attr("class", "x brush")
+            .call(brush)
+          .selectAll("rect")
+            .attr("y", -6)
+            .attr("height", height2 + 7);
+
+        });
+
+      });
 
   });
 
   function brushed() {
     x.domain(brush.empty() ? x2.domain() : brush.extent());
     focus.select(".steps").attr("d", stepArea);
+    focus.select(".floors").attr("d", floorArea);
     focus.select(".heartrate").attr("d", heartRateArea);
     focus.select(".x.axis").call(xAxis);
   }

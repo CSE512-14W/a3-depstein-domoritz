@@ -25,6 +25,12 @@ svg {
   clip-path: url(#clip);
 }
 
+.floors {
+  stroke: forestgreen;
+  fill: none;
+  clip-path: url(#clip);
+}
+
 .axis path,
 .axis line {
   fill: none;
