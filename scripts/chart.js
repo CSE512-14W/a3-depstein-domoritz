@@ -5,8 +5,8 @@
       height = 500 - margin.top - margin.bottom,
       height2 = 500 - margin2.top - margin2.bottom;
 
-  var parseDate = d3.time.format("%H:%M:%S").parse;
-  var parseDate2 = d3.time.format("%H:%M").parse;
+  var parseDateFitbit = d3.time.format("%H:%M:%S").parse;
+  var parseDateHeartrate = d3.time.format("%H:%M").parse;
 
   var x = d3.time.scale().range([0, width]),
       x2 = d3.time.scale().range([0, width]),
@@ -21,19 +21,19 @@
       .x(x2)
       .on("brush", brushed);
 
-  var area = d3.svg.area()
+  var stepArea = d3.svg.area()
       .interpolate("monotone")
       .x(function(d) { return x(d.date); })
       .y0(height)
       .y1(function(d) { return y(d.steps); });
 
-  var area3 = d3.svg.area()
+  var heartRateArea = d3.svg.area()
       .interpolate("monotone")
       .x(function(d) { return x(d.date); })
       .y0(height)
       .y1(function(d) { return y(d.heartrate); });
 
-  var area2 = d3.svg.area()
+  var minimap = d3.svg.area()
       .interpolate("monotone")
       .x(function(d) { return x2(d.date); })
       .y0(height2)
@@ -60,7 +60,7 @@
   d3.json("data/fitbit_steps.json", function(error, data) {
 
     data.forEach(function(d) {
-      d.date = parseDate(d.date);
+      d.date = parseDateFitbit(d.date);
       d.steps = +d.value;
     });
 
@@ -71,15 +71,15 @@
 
     focus.append("path")
         .datum(data)
-        .attr("class", "area")
-        .attr("d", area);
+        .attr("class", "steps")
+        .attr("d", stepArea);
 
     d3.csv("../data/heartrate_full.csv", type, function(error, data2) {
 
     focus.append("path")
         .datum(data2)
-        .attr("class", "area2")
-        .attr("d", area3);
+        .attr("class", "heartrate")
+        .attr("d", heartRateArea);
 
     focus.append("g")
         .attr("class", "x axis")
@@ -92,8 +92,8 @@
 
     context.append("path")
         .datum(data)
-        .attr("class", "area")
-        .attr("d", area2);
+        .attr("class", "steps")
+        .attr("d", minimap);
 
     context.append("g")
         .attr("class", "x axis")
@@ -109,18 +109,17 @@
 
     });
 
-    
   });
 
   function brushed() {
     x.domain(brush.empty() ? x2.domain() : brush.extent());
-    focus.select(".area").attr("d", area);
-    focus.select(".area2").attr("d", area3);
+    focus.select(".steps").attr("d", stepArea);
+    focus.select(".heartrate").attr("d", heartRateArea);
     focus.select(".x.axis").call(xAxis);
   }
 
   function type(d) {
-    d.date = parseDate2(d.date);
+    d.date = parseDateHeartrate(d.date);
     d.heartrate = +d.heartrate;
     return d;
   }

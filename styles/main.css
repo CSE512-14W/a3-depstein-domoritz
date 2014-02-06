@@ -13,13 +13,13 @@ svg {
   position: relative;
 }
 
-.area {
-  fill: steelblue;
+.heartrate {
+  fill: red;
   clip-path: url(#clip);
 }
 
-.area2 {
-  fill: red;
+.steps {
+  fill: steelblue;
   clip-path: url(#clip);
 }
 
