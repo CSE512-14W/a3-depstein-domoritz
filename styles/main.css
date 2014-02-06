@@ -14,12 +14,14 @@ svg {
 }
 
 .heartrate {
-  fill: red;
+  stroke: red;
+  fill: none;
   clip-path: url(#clip);
 }
 
 .steps {
-  fill: steelblue;
+  stroke: steelblue;
+  fill: none;
   clip-path: url(#clip);
 }
 

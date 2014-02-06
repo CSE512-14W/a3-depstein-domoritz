@@ -21,17 +21,13 @@
       .x(x2)
       .on("brush", brushed);
 
-  var stepArea = d3.svg.area()
-      .interpolate("monotone")
+  var stepArea = d3.svg.line()
       .x(function(d) { return x(d.date); })
-      .y0(height)
-      .y1(function(d) { return y(d.steps); });
+      .y(function(d) { return y(d.steps); });
 
-  var heartRateArea = d3.svg.area()
-      .interpolate("monotone")
+  var heartRateArea = d3.svg.line()
       .x(function(d) { return x(d.date); })
-      .y0(height)
-      .y1(function(d) { return y(d.heartrate); });
+      .y(function(d) { return y(d.heartrate); });
 
   var minimap = d3.svg.area()
       .interpolate("monotone")
@@ -64,6 +60,8 @@
       d.steps = +d.value;
     });
 
+    d3.csv("../data/heartrate_full.csv", type, function(error, data2) {
+
     x.domain(d3.extent(data.map(function(d) { return d.date; })));
     y.domain([0, d3.max(data.map(function(d) { return d.steps; }))]);
     x2.domain(x.domain());
@@ -73,8 +71,6 @@
         .datum(data)
         .attr("class", "steps")
         .attr("d", stepArea);
-
-    d3.csv("../data/heartrate_full.csv", type, function(error, data2) {
 
     focus.append("path")
         .datum(data2)
