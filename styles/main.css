@@ -18,6 +18,11 @@ svg {
   clip-path: url(#clip);
 }
 
+.area2 {
+  fill: red;
+  clip-path: url(#clip);
+}
+
 .axis path,
 .axis line {
   fill: none;
