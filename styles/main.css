@@ -13,6 +13,11 @@ svg {
   position: relative;
 }
 
+#map path {
+  transition-property: stroke-opacity;
+  transition-duration: 0.3s;
+}
+
 .heartrate {
   stroke: red;
   fill: none;

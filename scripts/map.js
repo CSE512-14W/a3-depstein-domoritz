@@ -143,7 +143,7 @@
 				map.on("highlight", function(e) {
 					if (e.highlightGroup === undefined || e.highlightGroup === feature.properties.highlightGroup) {
 						featureLayer.setStyle({
-							opacity: .8,
+							opacity: .7,
 							fillOpacity: .5
 						});
 					} else {
@@ -156,10 +156,10 @@
 
 				featureLayer.on({
 			        mouseover: function() {
-			        	map.fireEvent("highlight", {highlightGroup: feature.properties.highlightGroup})
+			        	map.fireEvent("highlight", {highlightGroup: feature.properties.highlightGroup});
 			        },
 			        mouseout: function() {
-			        	map.fireEvent("highlight", {highlightGroup: undefined})
+			        	map.fireEvent("highlight", {highlightGroup: undefined});
 			        }
 			    });
 		    },
@@ -175,6 +175,9 @@
 		function zoomToFeature(e) {
 		    map.fitBounds(e.target.getBounds());
 		}
+
+		// reset highlighting
+		map.fireEvent("highlight", {highlightGroup: undefined})
 
 		map.fitBounds(geojson.getBounds());
 
