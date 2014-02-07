@@ -7,82 +7,92 @@
 	    attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
 	}).addTo(map);
 
-
-	var svg = d3.select(map.getPanes().overlayPane).append("svg"),
-	    g = svg.append("g").attr("class", "leaflet-zoom-hide");
+	var table = '<table class="table table-striped table-bordered table-condensed"><tbody>{body}</tbody></table>',
+        row ='<tr><th>{key}</th><td>{value}</td></tr>'
 
 	d3.json("data/moves_log.json", function(data) {
 
+		// Convert data to geojson
 		var features = [];
 		data.segments.forEach(function(e) {
-			var feature = {};
 			if (e.type === "place") {
 				var loc = e.place.location;
-				feature = {
+				var feature = {
 					type: "Feature",
 					geometry: {
 						type: "Point",
 						coordinates: [loc.lon, loc.lat]
+					},
+					properties: {
+						type: "place"
 					}
-				}
-			} else if(e.type === "move") {
-				var coords = [];
+				};
+				features.push(feature);
+			} else if (e.type === "move") {
 				e.activities.forEach(function(activity) {
+					var coords = [];
 					activity.trackPoints.forEach(function(tp) {
 						coords.push([tp.lon, tp.lat]);
 					});
-				});
-				feature = {
-					type: "Feature",
-					geometry: {
-						type: "LineString",
-						coordinates: coords
+					var feature = {
+						type: "Feature",
+						geometry: {
+							type: "LineString",
+							coordinates: coords
+						},
+						properties: {
+							type: "move",
+							activity: activity.activity
+						}
 					}
-				}
+					features.push(feature);
+				});
+			} else {
+				console.log("Unknown type " + e.type);
 			}
-			features.push(feature);
 		});
 
 		var collection = {"type":"FeatureCollection", "features" : features};
 
-		var transform = d3.geo.transform({point: projectPoint}),
-		    path = d3.geo.path().projection(transform),
-		    bounds = path.bounds(collection);
-
-		var feature = g.selectAll("path")
-		    .data(collection.features);
-
-		feature.enter()
-			.append("path")
-			.attr("class", function(d) {
-				if (d.geometry.type === "Point") {
-					return "place";
+		var geojson = L.geoJson(collection, {
+			style: function(feature) {
+				var props = feature.properties;
+				if (props.type == "move") {
+					switch (feature.properties.activity) {
+			            case 'trp': return {color: "green"};
+			            case 'wlk': return {color: "blue"};
+			            case 'run': return {color: "red"};
+			        }
 				} else {
-					return "move";
+					console.log("foo");
+					return {};
 				}
-			});
+		    },
+		    onEachFeature: function (feature, layer) {
+				var body = '';
+				$.each(feature.properties, function(key, value){
+					if (value != null && typeof value === 'object') {
+						value = JSON.stringify(value);
+					}
+					body += L.Util.template(row, {key: key, value: value});
+				});
+				var popupContent = L.Util.template(table, {body: body});
+				layer.bindPopup(popupContent);
+		    },
+		    pointToLayer: function (feature, latlng) {
+		    	console.log(feature);
+		    	return L.circleMarker(latlng, {
+				    radius: 8,
+				    fillColor: "#ff7800",
+				    color: "#000",
+				    weight: 1,
+				    opacity: 1,
+				    fillOpacity: 0.8
+				});
+		    }
+		});
 
-		map.on("viewreset", reset);
-		reset();
-
-		// Reposition the SVG to cover the features.
-		function reset() {
-			var topLeft = bounds[0],
-			    bottomRight = bounds[1];
-
-			svg.attr("width", bottomRight[0] - topLeft[0])
-			    .attr("height", bottomRight[1] - topLeft[1])
-			    .style("left", topLeft[0] + "px")
-			    .style("top", topLeft[1] + "px");
-
-			g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-			feature.attr("d", path);
-		}
-
-		// Use Leaflet to implement a D3 geometric transformation.
-		function projectPoint(x, y) {
-			var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-			this.stream.point(point.x, point.y);
-		}
+		map.fitBounds(geojson.getBounds());
+		geojson.addTo(map);
 	});
 }());
