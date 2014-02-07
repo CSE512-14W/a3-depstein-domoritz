@@ -71,7 +71,7 @@
           d.floors = +d.value;
         });
 
-        d3.csv("../data/heartrate_full.csv", type, function(error, data3) {
+        d3.csv("data/heartrate_full.csv", type, function(error, data3) {
 
         x.domain(d3.extent(data.map(function(d) { return d.date; })));
         y.domain([0, d3.max(data.map(function(d) { return d.steps; }))]);
