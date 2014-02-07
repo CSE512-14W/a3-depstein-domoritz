@@ -27,29 +27,29 @@
 						type: "place"
 					}
 				};
+				if (e.place.name) {
+					feature.properties.name = e.place.name;
+				};
 				features.push(feature);
-			} else if (e.type === "move") {
-				e.activities.forEach(function(activity) {
-					var coords = [];
-					activity.trackPoints.forEach(function(tp) {
-						coords.push([tp.lon, tp.lat]);
-					});
-					var feature = {
-						type: "Feature",
-						geometry: {
-							type: "LineString",
-							coordinates: coords
-						},
-						properties: {
-							type: "move",
-							activity: activity.activity
-						}
-					}
-					features.push(feature);
-				});
-			} else {
-				console.log("Unknown type " + e.type);
 			}
+			e.activities.forEach(function(activity) {
+				var coords = [];
+				activity.trackPoints.forEach(function(tp) {
+					coords.push([tp.lon, tp.lat]);
+				});
+				delete activity['trackPoints'];
+				var properties = activity;
+				properties.type = "move";
+				var feature = {
+					type: "Feature",
+					geometry: {
+						type: "LineString",
+						coordinates: coords
+					},
+					properties: properties
+				}
+				features.push(feature);
+			});
 		});
 
 		var collection = {"type":"FeatureCollection", "features" : features};
@@ -64,7 +64,6 @@
 			            case 'run': return {color: "red"};
 			        }
 				} else {
-					console.log("foo");
 					return {};
 				}
 		    },
@@ -78,17 +77,6 @@
 				});
 				var popupContent = L.Util.template(table, {body: body});
 				layer.bindPopup(popupContent);
-		    },
-		    pointToLayer: function (feature, latlng) {
-		    	console.log(feature);
-		    	return L.circleMarker(latlng, {
-				    radius: 8,
-				    fillColor: "#ff7800",
-				    color: "#000",
-				    weight: 1,
-				    opacity: 1,
-				    fillOpacity: 0.8
-				});
 		    }
 		});
 
