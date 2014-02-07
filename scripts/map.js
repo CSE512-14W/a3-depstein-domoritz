@@ -10,6 +10,20 @@
 	var table = '<table class="table table-striped table-bordered table-condensed"><tbody>{body}</tbody></table>',
         row ='<tr><th>{key}</th><td>{value}</td></tr>'
 
+    var parseDate = function(s) {
+    	/*
+    	var date = new Date(s.substring(0,4), s.substring(4,6), s.substring(6,8), s.substring(9,11), s.substring(11,13), s.substring(13,15));
+    	*/
+    	return {
+    		hours: (parseInt(s.substring(9,11)) - 9 + 24)%24,
+    		minutes: parseInt(s.substring(11,13)),
+    		seconds: parseInt(s.substring(13,15))
+    	};
+    };
+
+    // id -> place
+    var places = {};
+
 	d3.json("data/moves_log.json", function(data) {
 
 		// Convert data to geojson
@@ -17,20 +31,27 @@
 		data.segments.forEach(function(e) {
 			if (e.type === "place") {
 				var loc = e.place.location;
-				var feature = {
-					type: "Feature",
-					geometry: {
-						type: "Point",
-						coordinates: [loc.lon, loc.lat]
-					},
-					properties: {
-						type: "place"
-					}
-				};
-				if (e.place.name) {
-					feature.properties.name = e.place.name;
-				};
-				features.push(feature);
+				var feature = {}
+				if (e.place.id in places) {
+					feature = places[e.place.id];
+					feature.properties.times.push([parseDate(e.startTime), parseDate(e.endTime)]);
+				} else {
+					feature = {
+						type: "Feature",
+						geometry: {
+							type: "Point",
+							coordinates: [loc.lon, loc.lat]
+						},
+						properties: {
+							type: "place",
+							times: [[parseDate(e.startTime), parseDate(e.endTime)]]
+						}
+					};
+					if (e.place.name) {
+						feature.properties.name = e.place.name;
+					};
+				}
+				places[e.place.id] = feature;
 			}
 			e.activities.forEach(function(activity) {
 				var coords = [];
@@ -40,6 +61,8 @@
 				delete activity['trackPoints'];
 				var properties = activity;
 				properties.type = "move";
+				properties.times = [[parseDate(e.startTime), parseDate(e.endTime)]];
+
 				var feature = {
 					type: "Feature",
 					geometry: {
@@ -51,6 +74,10 @@
 				features.push(feature);
 			});
 		});
+
+		for (var key in places) {
+			features.push(places[key]);
+		}
 
 		var collection = {"type":"FeatureCollection", "features" : features};
 
