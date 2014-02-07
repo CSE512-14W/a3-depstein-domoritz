@@ -21,7 +21,7 @@
     	};
     };
 
-    // id -> place
+    // place features, separate so that we can aggregate
     var places = {};
 
 	d3.json("data/moves_log.json", function(data) {
@@ -44,6 +44,8 @@
 						},
 						properties: {
 							type: "place",
+							// make an id
+							highlightGroup: e.place.id,
 							times: [[parseDate(e.startTime), parseDate(e.endTime)]]
 						}
 					};
@@ -55,13 +57,31 @@
 			}
 			e.activities.forEach(function(activity) {
 				var coords = [];
-				activity.trackPoints.forEach(function(tp) {
-					coords.push([tp.lon, tp.lat]);
-				});
-				delete activity['trackPoints'];
 				var properties = activity;
 				properties.type = "move";
-				properties.times = [[parseDate(e.startTime), parseDate(e.endTime)]];
+				properties.times = [parseDate(e.startTime), parseDate(e.endTime)];
+				// make an id
+				properties.highlightGroup = properties.activity + properties.times[0].hours + properties.times[0].minutes;
+
+				activity.trackPoints.forEach(function(tp) {
+					coords.push([tp.lon, tp.lat]);
+
+					// create a feature for each tracking point
+					feature = {
+						type: "Feature",
+						geometry: {
+							type: "Point",
+							coordinates: [tp.lon, tp.lat]
+						},
+						properties: {
+							type: "trackpoint",
+							highlightGroup: properties.layer
+						}
+					};
+					features.push(feature);
+				});
+
+				delete properties['trackPoints'];
 
 				var feature = {
 					type: "Feature",
@@ -90,12 +110,27 @@
 			            case 'wlk': return {color: "blue"};
 			            case 'run': return {color: "red"};
 			        }
+				} else if (props.type == "trackpoint") {
+					return {
+					    radius: 5,
+					    color: "#333",
+					    weight: 1,
+					    opacity: .8,
+					    fillOpacity: 0.5
+					};
 				} else {
-					return {};
+					return {
+					    radius: 10,
+					    fillColor: "#666",
+					    color: "#000",
+					    weight: 1,
+					    opacity: .8,
+					    fillOpacity: .5
+					};
 				}
 		    },
-		    onEachFeature: function (feature, layer) {
-				var body = '';
+		    onEachFeature: function (feature, featureLayer) {
+		    	var body = '';
 				$.each(feature.properties, function(key, value){
 					if (value != null && typeof value === 'object') {
 						value = JSON.stringify(value);
@@ -103,11 +138,46 @@
 					body += L.Util.template(row, {key: key, value: value});
 				});
 				var popupContent = L.Util.template(table, {body: body});
-				layer.bindPopup(popupContent);
+				featureLayer.bindPopup(popupContent);
+
+				map.on("highlight", function(e) {
+					if (e.highlightGroup === undefined || e.highlightGroup === feature.properties.highlightGroup) {
+						featureLayer.setStyle({
+							opacity: .8,
+							fillOpacity: .5
+						});
+					} else {
+						featureLayer.setStyle({
+							opacity: .2,
+							fillOpacity: .2
+						});
+					}
+				});
+
+				featureLayer.on({
+			        mouseover: function() {
+			        	map.fireEvent("highlight", {highlightGroup: feature.properties.highlightGroup})
+			        },
+			        mouseout: function() {
+			        	map.fireEvent("highlight", {highlightGroup: undefined})
+			        }
+			    });
+		    },
+		    pointToLayer: function (feature, latlng) {
+		        return L.circleMarker(latlng);
+		    },
+		    filter: function(feature, layer) {
+		     	// don't show track points
+		        return feature.properties.type !== "trackpoint";
 		    }
 		});
 
+		function zoomToFeature(e) {
+		    map.fitBounds(e.target.getBounds());
+		}
+
 		map.fitBounds(geojson.getBounds());
+
 		geojson.addTo(map);
 	});
 }());
