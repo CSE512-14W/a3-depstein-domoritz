@@ -15,7 +15,7 @@
     	var date = new Date(s.substring(0,4), s.substring(4,6), s.substring(6,8), s.substring(9,11), s.substring(11,13), s.substring(13,15));
     	*/
     	return {
-    		hours: (parseInt(s.substring(9,11)) - 9 + 24)%24,
+    		hours: (parseInt(s.substring(9,11)) - 8 + 24)%24,
     		minutes: parseInt(s.substring(11,13)),
     		seconds: parseInt(s.substring(13,15))
     	};
