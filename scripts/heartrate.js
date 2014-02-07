@@ -50,7 +50,7 @@
       .attr("class", "context")
       .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
-  d3.csv("../data/heartrate_full.csv", type, function(error, data) {
+  d3.csv("data/heartrate_full.csv", type, function(error, data) {
     x.domain(d3.extent(data.map(function(d) { return d.date; })));
     y.domain([0, d3.max(data.map(function(d) { return d.heartrate; }))]);
     x2.domain(x.domain());
