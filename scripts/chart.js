@@ -197,6 +197,14 @@
             .attr("y", -6)
             .attr("height", height2 + 7);
 
+          hoverBar.append("line")
+            .attr("x1", 0)
+            .attr("x2", 0)
+            .attr("y1", margin.top + location_height)
+            .attr("y2", height + margin.top)
+            .attr("stroke-width", 1)
+            .attr("stroke", "black");
+
           hoverBar.append("text")
             .attr("x", 9)
             .attr("dy", ".35em");
@@ -206,21 +214,24 @@
             .attr("x", margin.left)
             .attr("y", margin.top + location_height)
             .attr("width", width)
-            .attr("height", height)
+            .attr("height", height - location_height)
             .on("mouseover", function() { hoverBar.style("display", null); })
             .on("mouseout", function() { hoverBar.style("display", "none"); })
             .on("mousemove", mousemove);
 
           function mousemove() {
-            var x0 = x.invert(d3.mouse(this)[0] - margin.left);
-            var y0 = y.invert(d3.mouse(this)[1] - margin.top);
-            hoverBar.attr("transform", "translate(" + x(x0) + "," + y(y0) + ")");
+            var mouseX = d3.mouse(this)[0];
+            var mouseY = d3.mouse(this)[1];
+            var x0 = x.invert(mouseX - margin.left);
+            var y0 = y.invert(mouseY - margin.top);
             var hr = heartrate_data[bisectDate(heartrate_data, x0)-1];
             var st = step_data[bisectDate(step_data, x0)-1];
             var fl = floor_data[bisectDate(floor_data, x0)-1];
             console.log(st);
             console.log(fl);
+            hoverBar.select("text").attr("transform", "translate(" + mouseX + "," + mouseY + ")");
             hoverBar.select("text").text(sprintf("Heart rate:%.2f, Steps:%d, Floors:%d", hr.heartrate, st.steps, fl.floors));
+            hoverBar.select("line").attr("transform", "translate(" + mouseX + ",0)");
           }
         });
 
