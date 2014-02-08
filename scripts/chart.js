@@ -142,19 +142,36 @@
 
         d3.json("data/moves_log.json", function(error, moves_data) {
           var timespans = [];
+          var domainValues = {};
           moves_data.segments.forEach(function(s) {
             if(s.type == "place") {
               var datum = {};
               var times = parseMovesDates(s.startTime, s.endTime);
               datum.startTime = times[0];
               datum.endTime = times[1];
-              
+              datum.name = s.place.name;
+
+              domainValues[datum.name] = 1;
               timespans.push(datum);
             } else if(s.type == "move") {
-              //TODO
+              s.activities.forEach(function(a) {
+                var datum = {};
+                var times = parseMovesDates(a.startTime, a.endTime);
+                datum.startTime = times[0];
+                datum.endTime = times[1];
+                datum.name = a.activity;
+
+                domainValues[datum.name] = 1;
+                timespans.push(datum);
+              });
             }
           });
 
+          var count = 0;
+          for(var key in domainValues) {
+            domainValues[key] = count++;
+          }
+          var colorScale = d3.scale.category10();
           
           context.selectAll(".timeregion")
           .data(timespans)
@@ -163,7 +180,8 @@
           .attr("x", function(d) { return x(d.startTime); })
           .attr("width", function(d) { return x(d.endTime) - x(d.startTime); })
           .attr("y", 0)
-          .attr("height", height2);
+          .attr("height", height2)
+          .style("fill", function(d) { return colorScale(domainValues[d.name]); });
           
           context.append("g")
             .attr("class", "x brush")
