@@ -36,6 +36,10 @@ svg {
   clip-path: url(#clip);
 }
 
+.timeregion {
+  fill: yellow;
+}
+
 .axis path,
 .axis line {
   fill: none;

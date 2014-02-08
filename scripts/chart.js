@@ -7,6 +7,32 @@
 
   var parseDateFitbit = d3.time.format("%H:%M:%S").parse;
   var parseDateHeartrate = d3.time.format("%H:%M").parse;
+  var parseMovesDates = function(startTime, endTime) { //Yes, this function is horrendous.
+    startTime = d3.time.format("%Y%m%dT%H%M%SZ").parse(startTime);
+    endTime = d3.time.format("%Y%m%dT%H%M%SZ").parse(endTime);
+
+    if (startTime.getDate() == 5 && startTime.getHours() - 7 < 0) {
+      startTime.setHours(0);
+      startTime.setMinutes(0);
+      startTime.setSeconds(0);
+    } else {
+      startTime.setHours((startTime.getHours() - 7));
+    }
+      startTime.setYear(1900);
+      startTime.setMonth(0);
+      startTime.setDate(1);
+    if (endTime.getDate() == 6 && endTime.getHours() >= 7) {
+      endTime.setHours(23);
+      endTime.setMinutes(59);
+      endTime.setSeconds(0);
+    } else {
+      endTime.setHours((endTime.getHours() - 7 + 24) % 24);
+    }
+    endTime.setYear(1900);
+    endTime.setMonth(0);
+    endTime.setDate(1);
+    return [startTime, endTime];
+  }
 
   var x = d3.time.scale().range([0, width]),
       x2 = d3.time.scale().range([0, width]),
@@ -57,39 +83,39 @@
       .attr("class", "context")
       .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
-  d3.json("data/fitbit_steps.json", function(error, data) {
+  d3.json("data/fitbit_steps.json", function(error, step_data) {
 
-    data.forEach(function(d) {
+    step_data.forEach(function(d) {
       d.date = parseDateFitbit(d.date);
       d.steps = +d.value;
     });
 
-    d3.json("data/fitbit_floors.json", function(error, data2) {
+    d3.json("data/fitbit_floors.json", function(error, floor_data) {
 
-        data2.forEach(function(d) {
+        floor_data.forEach(function(d) {
           d.date = parseDateFitbit(d.date);
           d.floors = +d.value;
         });
 
-        d3.csv("data/heartrate_full.csv", type, function(error, data3) {
+        d3.csv("data/heartrate_full.csv", type, function(error, heartrate_data) {
 
-        x.domain(d3.extent(data.map(function(d) { return d.date; })));
-        y.domain([0, d3.max(data.map(function(d) { return d.steps; }))]);
+        x.domain(d3.extent(step_data.map(function(d) { return d.date; })));
+        y.domain([0, d3.max(step_data.map(function(d) { return d.steps; }))]);
         x2.domain(x.domain());
         y2.domain(y.domain());
 
         focus.append("path")
-            .datum(data)
+            .datum(step_data)
             .attr("class", "steps")
             .attr("d", stepArea);
 
         focus.append("path")
-            .datum(data2)
+            .datum(floor_data)
             .attr("class", "floors")
             .attr("d", floorArea);
 
         focus.append("path")
-            .datum(data3)
+            .datum(heartrate_data)
             .attr("class", "heartrate")
             .attr("d", heartRateArea);
 
@@ -102,22 +128,50 @@
             .attr("class", "y axis")
             .call(yAxis);
 
+        /*
         context.append("path")
-            .datum(data)
+            .datum(step_data)
             .attr("class", "steps")
             .attr("d", minimap);
+        */
 
         context.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height2 + ")")
             .call(xAxis2);
 
-        context.append("g")
+        d3.json("data/moves_log.json", function(error, moves_data) {
+          var timespans = [];
+          moves_data.segments.forEach(function(s) {
+            if(s.type == "place") {
+              var datum = {};
+              var times = parseMovesDates(s.startTime, s.endTime);
+              datum.startTime = times[0];
+              datum.endTime = times[1];
+              
+              timespans.push(datum);
+            } else if(s.type == "move") {
+              //TODO
+            }
+          });
+
+          
+          context.selectAll(".timeregion")
+          .data(timespans)
+          .enter().append("rect")
+          .attr("class", "timeregion")
+          .attr("x", function(d) { return x(d.startTime); })
+          .attr("width", function(d) { return x(d.endTime) - x(d.startTime); })
+          .attr("y", 0)
+          .attr("height", height2);
+          
+          context.append("g")
             .attr("class", "x brush")
             .call(brush)
           .selectAll("rect")
             .attr("y", -6)
             .attr("height", height2 + 7);
+        });
 
         });
 
@@ -130,7 +184,6 @@
   }
 
   function brushRange(extent) {
-    console.log(extent);
     x.domain(extent);
     focus.select(".steps").attr("d", stepArea);
     focus.select(".floors").attr("d", floorArea);
