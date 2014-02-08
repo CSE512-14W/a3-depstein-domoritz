@@ -18,6 +18,15 @@ svg {
   transition-duration: 0.3s;
 }
 
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.hoverBar {
+
+}
+
 .heartrate {
   stroke: red;
   fill: none;

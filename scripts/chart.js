@@ -3,7 +3,8 @@
       margin2 = {top: 430, right: 10, bottom: 20, left: 40},
       width = 960 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom,
-      height2 = 500 - margin2.top - margin2.bottom;
+      height2 = 500 - margin2.top - margin2.bottom,
+      location_height = 20;
 
   var parseDateFitbit = d3.time.format("%H:%M:%S").parse;
   var parseDateHeartrate = d3.time.format("%H:%M").parse;
@@ -34,6 +35,8 @@
     return [startTime, endTime];
   }
 
+  var bisectDate = d3.bisector(function(d) { return d.date; }).left;
+
   var x = d3.time.scale().range([0, width]),
       x2 = d3.time.scale().range([0, width]),
       y = d3.scale.linear().range([height, 0]),
@@ -46,10 +49,6 @@
   var brush = d3.svg.brush()
       .x(x2)
       .on("brush", brushed);
-
-  var floorArea = d3.svg.line()
-      .x(function(d) { return x(d.date); })
-      .y(function(d) { return y(d.floors*25); });
 
   var heartRateArea = d3.svg.line()
       .x(function(d) { return x(d.date); })
@@ -72,6 +71,10 @@
   var context = svg.append("g")
       .attr("class", "context")
       .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+  var hoverBar = svg.append("g")
+    .attr("class", "hoverBar")
+    .style("display", "none");
 
   d3.json("data/fitbit_steps.json", function(error, step_data) {
 
@@ -183,7 +186,7 @@
           .attr("x", function(d) { return x(d.startTime); })
           .attr("width", function(d) { return x(d.endTime) - x(d.startTime); })
           .attr("y", 0)
-          .attr("height", 20)
+          .attr("height", location_height)
           .style("fill", function(d) { return colorScale(domainValues[d.name]); })
           .on("click", clickLocation);
           
@@ -193,6 +196,32 @@
           .selectAll("rect")
             .attr("y", -6)
             .attr("height", height2 + 7);
+
+          hoverBar.append("text")
+            .attr("x", 9)
+            .attr("dy", ".35em");
+
+          svg.append("rect")
+            .attr("class", "overlay")
+            .attr("x", margin.left)
+            .attr("y", margin.top + location_height)
+            .attr("width", width)
+            .attr("height", height)
+            .on("mouseover", function() { hoverBar.style("display", null); })
+            .on("mouseout", function() { hoverBar.style("display", "none"); })
+            .on("mousemove", mousemove);
+
+          function mousemove() {
+            var x0 = x.invert(d3.mouse(this)[0] - margin.left);
+            var y0 = y.invert(d3.mouse(this)[1] - margin.top);
+            hoverBar.attr("transform", "translate(" + x(x0) + "," + y(y0) + ")");
+            var hr = heartrate_data[bisectDate(heartrate_data, x0)-1];
+            var st = step_data[bisectDate(step_data, x0)-1];
+            var fl = floor_data[bisectDate(floor_data, x0)-1];
+            console.log(st);
+            console.log(fl);
+            hoverBar.select("text").text(sprintf("Heart rate:%.2f, Steps:%d, Floors:%d", hr.heartrate, st.steps, fl.floors));
+          }
         });
 
         });
@@ -213,7 +242,6 @@
     x.domain(extent);
     brush.extent(extent);
     context.selectAll(".brush").call(brush);
-    focus.select(".floors").attr("d", floorArea);
     focus.select(".heartrate").attr("d", heartRateArea);
     focus.selectAll(".location").attr("x", function(d) { return d3.max([x(d.startTime), 0]); })
     .attr("width", function(d) { return d3.max([d3.min([x(d.endTime) - d3.max([x(d.startTime), 0]), x(extent[1]) - d3.max([x(d.startTime), 0])]), 0]); });
