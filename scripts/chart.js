@@ -47,10 +47,6 @@
       .x(x2)
       .on("brush", brushed);
 
-  var stepArea = d3.svg.line()
-      .x(function(d) { return x(d.date); })
-      .y(function(d) { return y(d.steps); });
-
   var floorArea = d3.svg.line()
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d.floors*25); });
@@ -58,12 +54,6 @@
   var heartRateArea = d3.svg.line()
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d.heartrate); });
-
-  var minimap = d3.svg.area()
-      .interpolate("monotone")
-      .x(function(d) { return x2(d.date); })
-      .y0(height2)
-      .y1(function(d) { return y2(d.steps); });
 
   var svg = d3.select("#plot").append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -104,15 +94,23 @@
         x2.domain(x.domain());
         y2.domain(y.domain());
 
-        focus.append("path")
-            .datum(step_data)
-            .attr("class", "steps")
-            .attr("d", stepArea);
+        focus.selectAll(".steps")
+          .data(step_data)
+          .enter().append("rect")
+          .attr("class", "steps")
+          .attr("x", function(d) { return x(d.date); })
+          .attr("width", 0.5 )
+          .attr("y", function(d) { return y(d.steps);})
+          .attr("height", function(d) {return height - y(d.steps); });
 
-        focus.append("path")
-            .datum(floor_data)
-            .attr("class", "floors")
-            .attr("d", floorArea);
+        focus.selectAll(".floors")
+          .data(floor_data)
+          .enter().append("rect")
+          .attr("class", "floors")
+          .attr("x", function(d) { return x(d.date); })
+          .attr("width", 0.5 )
+          .attr("y", function(d) { return y(10*d.floors);})
+          .attr("height", function(d) {return height - y(10*d.floors); });
 
         focus.append("path")
             .datum(heartrate_data)
@@ -127,13 +125,6 @@
         focus.append("g")
             .attr("class", "y axis")
             .call(yAxis);
-
-        /*
-        context.append("path")
-            .datum(step_data)
-            .attr("class", "steps")
-            .attr("d", minimap);
-        */
 
         context.append("g")
             .attr("class", "x axis")
@@ -222,11 +213,16 @@
     x.domain(extent);
     brush.extent(extent);
     context.selectAll(".brush").call(brush);
-    focus.select(".steps").attr("d", stepArea);
     focus.select(".floors").attr("d", floorArea);
     focus.select(".heartrate").attr("d", heartRateArea);
     focus.selectAll(".location").attr("x", function(d) { return d3.max([x(d.startTime), 0]); })
     .attr("width", function(d) { return d3.max([d3.min([x(d.endTime) - d3.max([x(d.startTime), 0]), x(extent[1]) - d3.max([x(d.startTime), 0])]), 0]); });
+
+    focus.selectAll(".steps").attr("x", function(d) { return x(d.date); })
+    .attr("width", function(d) { return x(d.date)<x(extent[0])||x(d.date)>x(extent[1])?0:700/((extent[1]-extent[0])/60000); });
+
+    focus.selectAll(".floors").attr("x", function(d) { return x(d.date); })
+    .attr("width", function(d) { return x(d.date)<x(extent[0])||x(d.date)>x(extent[1])?0:700/((extent[1]-extent[0])/60000); });
     focus.select(".x.axis").call(xAxis);
   }
 

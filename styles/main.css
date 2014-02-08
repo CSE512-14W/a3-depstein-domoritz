@@ -25,14 +25,14 @@ svg {
 }
 
 .steps {
-  stroke: steelblue;
-  fill: none;
+  fill: steelblue;
+  stroke: none;
   clip-path: url(#clip);
 }
 
 .floors {
-  stroke: forestgreen;
-  fill: none;
+  fill: forestgreen;
+  stroke: none;
   clip-path: url(#clip);
 }
 
