@@ -126,7 +126,12 @@
   });
 
   function brushed() {
-    x.domain(brush.empty() ? x2.domain() : brush.extent());
+    brushRange(brush.empty() ? x2.domain() : brush.extent());
+  }
+
+  function brushRange(extent) {
+    console.log(extent);
+    x.domain(extent);
     focus.select(".steps").attr("d", stepArea);
     focus.select(".floors").attr("d", floorArea);
     focus.select(".heartrate").attr("d", heartRateArea);
