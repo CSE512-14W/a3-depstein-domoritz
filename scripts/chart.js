@@ -212,7 +212,6 @@
 
   function clickLocation(d) {
     brushRange([d.startTime, d.endTime]);
-    //TODO: update the brush highlighter tool
   }
 
   function brushed() {
@@ -221,6 +220,8 @@
 
   function brushRange(extent) {
     x.domain(extent);
+    brush.extent(extent);
+    context.selectAll(".brush").call(brush);
     focus.select(".steps").attr("d", stepArea);
     focus.select(".floors").attr("d", floorArea);
     focus.select(".heartrate").attr("d", heartRateArea);
