@@ -173,6 +173,7 @@
           }
           var colorScale = d3.scale.category10();
           
+          //Context version
           context.selectAll(".timeregion")
           .data(timespans)
           .enter().append("rect")
@@ -182,6 +183,18 @@
           .attr("y", 0)
           .attr("height", height2)
           .style("fill", function(d) { return colorScale(domainValues[d.name]); });
+
+          //Focus version
+          focus.selectAll(".location")
+          .data(timespans)
+          .enter().append("rect")
+          .attr("class", "location")
+          .attr("x", function(d) { return x(d.startTime); })
+          .attr("width", function(d) { return x(d.endTime) - x(d.startTime); })
+          .attr("y", 0)
+          .attr("height", 20)
+          .style("fill", function(d) { return colorScale(domainValues[d.name]); })
+          .on("click", clickLocation);
           
           context.append("g")
             .attr("class", "x brush")
@@ -197,6 +210,11 @@
 
   });
 
+  function clickLocation(d) {
+    brushRange([d.startTime, d.endTime]);
+    //TODO: update the brush highlighter tool
+  }
+
   function brushed() {
     brushRange(brush.empty() ? x2.domain() : brush.extent());
   }
@@ -206,6 +224,8 @@
     focus.select(".steps").attr("d", stepArea);
     focus.select(".floors").attr("d", floorArea);
     focus.select(".heartrate").attr("d", heartRateArea);
+    focus.selectAll(".location").attr("x", function(d) { return d3.max([x(d.startTime), 0]); })
+    .attr("width", function(d) { return d3.max([d3.min([x(d.endTime) - d3.max([x(d.startTime), 0]), x(extent[1]) - d3.max([x(d.startTime), 0])]), 0]); });
     focus.select(".x.axis").call(xAxis);
   }
 

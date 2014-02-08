@@ -36,6 +36,14 @@ svg {
   clip-path: url(#clip);
 }
 
+.location {
+  opacity:0.5;
+}
+
+.location:hover {
+  opacity:1.0;
+}
+
 .timeregion {
 }
 
