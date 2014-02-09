@@ -142,7 +142,13 @@
 						name: feature.properties.name ? feature.properties.name : "unknown",
 						times: times
 					});
-				};
+				} else {
+					popupContent = L.Util.template('<strong>{activity}</strong><br/>from {begin} to {end}', {
+						activity: activityNames[feature.properties.activity],
+						begin: timeFormat(feature.properties.time[0]),
+						end: timeFormat(feature.properties.time[1])
+					});
+				}
 
 				featureLayer.bindPopup(popupContent);
 

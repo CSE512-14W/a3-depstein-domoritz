@@ -175,7 +175,7 @@ var chart = (function() {
                   var times = parseMovesDates(a.startTime, a.endTime);
                   datum.startTime = times[0];
                   datum.endTime = times[1];
-                  datum.name = a.activity;
+                  datum.name = activityNames[a.activity];
 
                   domainValues[datum.name] = 1;
                   timespans.push(datum);
