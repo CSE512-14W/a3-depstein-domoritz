@@ -8,18 +8,9 @@
 	}).addTo(map);
 
 	var table = '<table class="table table-striped table-bordered table-condensed"><tbody>{body}</tbody></table>',
-        row ='<tr><th>{key}</th><td>{value}</td></tr>'
+        row ='<tr><th>{key}</th><td>{value}</td></tr>';
 
-    var parseDate = function(s) {
-    	/*
-    	var date = new Date(s.substring(0,4), s.substring(4,6), s.substring(6,8), s.substring(9,11), s.substring(11,13), s.substring(13,15));
-    	*/
-    	return {
-    		hours: (parseInt(s.substring(9,11)) - 7 + 24)%24,
-    		minutes: parseInt(s.substring(11,13)),
-    		seconds: parseInt(s.substring(13,15))
-    	};
-    };
+    var timeFormat = d3.time.format("%H:%M");
 
     // place features, separate so that we can aggregate
     var places = {};
@@ -34,7 +25,7 @@
 				var feature = {}
 				if (e.place.id in places) {
 					feature = places[e.place.id];
-					feature.properties.times.push([parseDate(e.startTime), parseDate(e.endTime)]);
+					feature.properties.times.push(parseMovesDates(e.startTime, e.endTime));
 				} else {
 					feature = {
 						type: "Feature",
@@ -46,7 +37,7 @@
 							type: "place",
 							// make an id
 							highlightGroup: e.place.id,
-							times: [[parseDate(e.startTime), parseDate(e.endTime)]]
+							times: [parseMovesDates(e.startTime, e.endTime)]
 						}
 					};
 					if (e.place.name) {
@@ -59,9 +50,9 @@
 				var coords = [];
 				var properties = activity;
 				properties.type = "move";
-				properties.times = [parseDate(e.startTime), parseDate(e.endTime)];
+				properties.time = parseMovesDates(e.startTime, e.endTime);
 				// make an id
-				properties.highlightGroup = properties.activity + properties.times[0].hours + properties.times[0].minutes;
+				properties.highlightGroup = properties.activity + timeFormat(properties.time[0]);
 
 				activity.trackPoints.forEach(function(tp) {
 					coords.push([tp.lon, tp.lat]);
@@ -138,6 +129,21 @@
 					body += L.Util.template(row, {key: key, value: value});
 				});
 				var popupContent = L.Util.template(table, {body: body});
+
+				if (feature.properties.type == 'place') {
+					var times = '';
+					$.each(feature.properties.times, function(key, value){
+						times += L.Util.template("<li>from {begin} to {end}</li>", {
+							begin: timeFormat(value[0]),
+							end: timeFormat(value[1])
+						});
+					});
+					popupContent = L.Util.template('<strong>{name}</strong><br/><ul>{times}</ul>', {
+						name: feature.properties.name ? feature.properties.name : "unknown",
+						times: times
+					});
+				};
+
 				featureLayer.bindPopup(popupContent);
 
 				map.on("highlight", function(e) {
