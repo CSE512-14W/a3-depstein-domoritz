@@ -4,7 +4,9 @@
       width = 960 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom,
       height2 = 500 - margin2.top - margin2.bottom,
-      location_height = 20;
+      location_height = 20,
+      legend_width = 400,
+      legend_height = 200;
 
   var parseDateFitbit = d3.time.format("%H:%M:%S").parse;
   var parseDateHeartrate = d3.time.format("%H:%M").parse;
@@ -157,11 +159,40 @@
             }
           });
 
+          var colorScale = d3.scale.category10();
+          domainEntries = [];
           var count = 0;
           for(var key in domainValues) {
             domainValues[key] = count++;
+            var entry = {};
+            entry["name"] = key;
+            entry["index"] = domainValues[key];
+            entry["color"] = colorScale(domainValues[key]);
+            domainEntries.push(entry);
           }
-          var colorScale = d3.scale.category10();
+
+          var legend = d3.select("#legend").append("svg")
+          .attr("width", legend_width)
+          .attr("height", legend_height);
+
+          var legend_entries = legend.selectAll(".legendentry")
+            .data(domainEntries)
+            .enter().append("g")
+            .attr("class", "legendentry")
+            .attr("transform", function(d) {return "translate(10," + (5+20*d["index"]) + ")"});
+
+            legend_entries.append("rect")
+            .attr("class", "legendentry")
+            .attr("width", 10)
+            .attr("height", 10)
+            .style("fill", function(d) {return d["color"]; })
+            .style("stroke", "black");
+
+            legend_entries.append("text")
+              .attr("dy", ".3em")
+              .attr("x", 15)
+              .attr("y", 5)
+              .text(function(d) {return d["name"]; });
           
           //Context version
           context.selectAll(".timeregion")
