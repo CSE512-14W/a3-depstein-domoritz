@@ -1,23 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title>Assignment 3</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+	<link rel="stylesheet" href="styles/bootstrap.min.css" />
+	<link rel="stylesheet" href="styles/bootstrap-theme.min.css" />
 
 	<link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-    <div class="container">
-	    <h1>Heart rate visualization</h1>
-	    <div id="plot"></div>
-	    <div id="map"></div>
-    </div>
+	<div class="row">
+	    <div class="col-lg-6">
+		    <h1>Heart rate visualization</h1>
+		    <div id="plot"></div>
+		    <div id="map"></div>
+	    </div>
+	    <div class="col-lg-6">
+		    <h2>Summary</h2>
+		    <h5>Steps Walked:</h5><div id="step_summary">0</div>
+		    <h5>Average Heart Rate:</h5><div id="heart_summary">0</div>
+	    </div>
+	</div>
 
 	<script src="https://code.jquery.com/jquery.js"></script>
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+	<script src="scripts/bootstrap.min.js"></script>
 	<script src="scripts/d3.v3.min.js" charset="utf-8"></script>
 	<script src="scripts/sprintf.min.js" charset="utf-8"></script>
 	<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>

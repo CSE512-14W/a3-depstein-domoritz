@@ -6,11 +6,17 @@ body {
 #map {
   width: 960px;
   height: 500px;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 svg {
   font: 10px sans-serif;
-  position: relative;
+  
+}
+
+.col-lg-9 {
+  text-align:center;
 }
 
 #map path {
@@ -36,12 +42,14 @@ svg {
 .steps {
   fill: steelblue;
   stroke: none;
+  opacity:0.8;
   clip-path: url(#clip);
 }
 
 .floors {
   fill: forestgreen;
   stroke: none;
+  opacity:0.8;
   clip-path: url(#clip);
 }
 
