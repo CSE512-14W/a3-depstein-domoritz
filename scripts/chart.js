@@ -57,11 +57,11 @@ var chart = (function() {
     .on("brush", brushed);
 
   var brushRange = function(extent) {
-    if (x.domain() != extent) {
+    x.domain(extent);
+    if (extent[0].getTime() != x2.domain()[0].getTime() || extent[1].getTime() != x2.domain()[1].getTime()) {
+      brush.extent(extent);
       context.selectAll(".brush").call(brush);
     }
-    x.domain(extent);
-    brush.extent(extent);
     focus.select(".heartrate").attr("d", heartRateArea);
     focus.selectAll(".location").attr("x", function(d) { return d3.max([x(d.startTime), 0]); })
     .attr("width", function(d) { return d3.max([d3.min([x(d.endTime) - d3.max([x(d.startTime), 0]), x(extent[1]) - d3.max([x(d.startTime), 0])]), 0]); });
