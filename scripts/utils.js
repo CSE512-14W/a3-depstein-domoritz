@@ -24,7 +24,7 @@ var parseMovesDates = function(startTimeStr, endTimeStr) { //Yes, this function 
   endTime.setMonth(0);
   endTime.setDate(1);
 
-  console.log("parsed " + startTimeStr + " " + endTimeStr + " as " + [startTime, endTime])
+  // console.log("parsed " + startTimeStr + " " + endTimeStr + " as " + [startTime, endTime])
 
   return [startTime, endTime];
 };
