@@ -8,12 +8,18 @@
 	}).addTo(map);
 
 	var table = '<table class="table table-striped table-bordered table-condensed"><tbody>{body}</tbody></table>',
-        row ='<tr><th>{key}</th><td>{value}</td></tr>';
+        row ='<tr><th>{key}</th><td>{value}</td></tr>',
+        rangeTmpl = '<a href="#" class="brushRange" data-begin="{tsb}" data-end="{tse}">from {begin} to {end}</a>';
 
     var timeFormat = d3.time.format("%H:%M");
 
     // place features, separate so that we can aggregate
     var places = {};
+
+    $(document).on('click', '.brushRange', function(e) {
+		e.preventDefault();
+		chart.brushRange([new Date($(this).attr('data-begin')), new Date($(this).attr('data-end'))]);
+	});
 
 	d3.json("data/moves_log.json", function(data) {
 
@@ -133,7 +139,9 @@
 				if (feature.properties.type == 'place') {
 					var times = '';
 					$.each(feature.properties.times, function(key, value){
-						times += L.Util.template("<li>from {begin} to {end}</li>", {
+						times += L.Util.template('<li>' + rangeTmpl + '</li>', {
+							tsb: value[0],
+							tse: value[1],
 							begin: timeFormat(value[0]),
 							end: timeFormat(value[1])
 						});
@@ -143,8 +151,10 @@
 						times: times
 					});
 				} else {
-					popupContent = L.Util.template('<strong>{activity}</strong><br/>from {begin} to {end}', {
+					popupContent = L.Util.template('<strong>{activity}</strong><br/>' + rangeTmpl, {
 						activity: activityNames[feature.properties.activity],
+						tsb: feature.properties.time[0],
+						tse: feature.properties.time[1],
 						begin: timeFormat(feature.properties.time[0]),
 						end: timeFormat(feature.properties.time[1])
 					});
