@@ -163,9 +163,16 @@
 				featureLayer.on({
 			        mouseover: function() {
 			        	map.fireEvent("highlight", {highlightGroup: feature.properties.highlightGroup});
+					//featureLayer.openPopup();
 			        },
 			        mouseout: function() {
 			        	map.fireEvent("highlight", {highlightGroup: undefined});
+					//featureLayer.closePopup();
+			        },
+			        click: function() {
+					if (feature.properties.type == 'move') {
+						chart.brushRange(feature.properties.time);
+					}
 			        }
 			    });
 		    },

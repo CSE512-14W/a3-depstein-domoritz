@@ -78,9 +78,7 @@ var chart = (function() {
   }
 
   function brushed() {
-    var brushExtent = brush.empty() ? x2.domain() : brush.extent();
-    console.log(brushExtent);
-    brushRange(brushExtent);
+    brushRange(brush.empty() ? x2.domain() : brush.extent());
   }
 
   function setSummaryStatistics(extent) {
