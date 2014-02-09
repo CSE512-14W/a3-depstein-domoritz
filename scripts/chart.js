@@ -1,7 +1,7 @@
 (function() {
   var margin = {top: 10, right: 10, bottom: 100, left: 40},
       margin2 = {top: 430, right: 10, bottom: 20, left: 40},
-      width = 960 - margin.left - margin.right,
+      width = parseInt(d3.select("#plot").style('width'), 10) - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom,
       height2 = 500 - margin2.top - margin2.bottom,
       location_height = 20,

@@ -3,8 +3,12 @@ body {
   padding-bottom: 100px;
 }
 
+.main-container {
+  max-width: 1600px;
+}
+
 #map {
-  width: 960px;
+  width: 100%;
   height: 500px;
   margin-left:auto;
   margin-right:auto;
@@ -12,7 +16,6 @@ body {
 
 svg {
   font: 10px sans-serif;
-  
 }
 
 .col-lg-9 {
