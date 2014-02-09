@@ -50,7 +50,7 @@
 				var coords = [];
 				var properties = activity;
 				properties.type = "move";
-				properties.time = parseMovesDates(e.startTime, e.endTime);
+				properties.time = parseMovesDates(activity.startTime, activity.endTime);
 				// make an id
 				properties.highlightGroup = properties.activity + timeFormat(properties.time[0]);
 
