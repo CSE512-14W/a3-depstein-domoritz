@@ -5,7 +5,7 @@
 1. Daniel Epstein depstein@cs
 2. Dominik Moritz domoritz@cs
 
-## Project Name
+## Explore your day
 
 This is an example repository for assignment 3 submission.
 (Put your a brief description of your final interactive visualization application and your dataset here.)
@@ -28,8 +28,10 @@ A paragraph explaining changes between the storyboard and the final implementati
 
 ## Development Process
 
-Include:
-- Breakdown of how the work was split among the group members.
-- a commentary on the development process, including answers to the following questions:
-  - Roughly how much time did you spend developing your application?
-  - What aspects took the most time?
+* Daniel initially focused on the graph, Dominik focused on the map
+* Daniel created a function to set the brush programatically, Dominik implemented the interaction between the map and the chart
+* We spent about
+  * 2 hours on the initial design of the story board
+  * several hours on a failed attempt to use a D3 layer with leaflet (eventually we switched to pure Leaflet)
+  * 7 hours on the map and the interaction between the map and the chart
+* Adding interaction between the map and the chart and within the chart and the map took the most time.
