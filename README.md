@@ -5,11 +5,18 @@
 1. Daniel Epstein depstein@cs
 2. Dominik Moritz domoritz@cs
 
-## Explore your day
+## Explore a day in your life
 
-This is an example repository for assignment 3 submission.
-(Put your a brief description of your final interactive visualization application and your dataset here.)
+Or more accurately, July 5, 2013 in Daniel Epstein's life!
 
+This visualization shows the heart rate over the course of a day. In addition to that, you can see the steps walked and the number of floors that were moved up. Brush a certain region or click on the locations in the chart or the map to limit the view to part of the day. You can interact with either the chart or the map.
+
+The data contained 24 hours (at 1-minute intervals) of:
+
+* Steps walked
+* Flights of stairs climbed
+* Heart rate
+* Current named location (e.g. "Home", "CSE") or transport type (e.g. "Walking", "Running", "Transport")
 
 ## Running Instructions
 
@@ -18,13 +25,6 @@ Access our visualization at [cse512-14w.github.io/a3-depstein-domoritz/](http://
 
 ## Story Board
 
-The data contained 24 hours (at 1-minute intervals) of:
-
-* Steps walked
-* Flights of stairs climbed
-* Heart rate
-* Current named location (e.g. "Home", "CSE") or transport type (e.g. "Walking", "Running", "Transport")
-  
 The basic overview of the interface is here:
 
 ![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/summary.jpg)
@@ -69,19 +69,18 @@ Instead of implementing focus+context from the map by alpha-ing out unselected r
 
 Hovering on a region in the chart is not reflected in the map. Instead, users have to click on on a region to change the span that is focused on. Furthermore, there is no differentiation between highlighted time spans and a time span that is focused on any more because they have been unified into one.
 
-Instead of displaying all 3 data types, the y-axis only shows heart rate. We thought that labeling all 3 data types would be overwhelming and look messy.
-
 
 ## Development Process
 
 * Daniel initially focused on the graph, Dominik focused on the map
 * Daniel created a function to set the brush programatically, Dominik implemented the interaction between the map and the chart
 * We spent about
-  * 2 hours on the initial design of the story board
+  * 2 hours collecting and understanding the data
+  * 4 hours on the initial design of the story board
   * several hours on a failed attempt to use a D3 layer with leaflet (eventually we switched to pure Leaflet)
   * 7 hours on the map and the interaction between the map and the chart
-  * 1 hour on the summary pane and legend
-  * 7 hours on chart
-  * 6 hours on the map
-  * 8 hours on the interaction between the map and the chart and refinements
+  * 2 hour on the summary pane and legend
+  * 8 hours on chart
+  * 8 hours on the map
+  * 7 hours on the interaction between the map and the chart and refinements
 * Adding interaction between the map and the chart and within the chart and the map took the most time.
