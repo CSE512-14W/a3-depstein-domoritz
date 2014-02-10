@@ -29,7 +29,7 @@ The basic overview of the interface is here:
 
 ![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/summary.jpg)
 
-We have two main views, a chart and a map. The chart displays the step, flight, and heart rate data, while the locations appear on the map. The x-axis of the chart is time, while the times of each event appear in tooltips on the map. We used a focus+context view for the chart, with the context view beneath the chart colored according to the places visited. To the right of the chart are a legend and some summary information about the current region selected.
+We have two main views, a chart and a map. The chart displays the step, flight, and heart rate data, while the locations appear on the map. The x-axis of the chart is time, while the times of each event appear in tooltips on the map. We used a *focus+context* view for the chart, with the context view beneath the chart colored according to the places visited. To the right of the chart are a legend and some summary information about the current region selected.
 
 We really wanted the interaction techniques to promote exploration of patterns in this data. As such, we intended for the visualization to be responsive to what the user was interested in learning more about by making nearly everything hoverable or selectable.
 
@@ -66,6 +66,8 @@ And that span will then be focused on in the above chart, as well as highlighted
 Instead of hovering over the bars in the chart and having the information update the summary pane, we implemented a hover line that shows the detailed information.
 
 Instead of implementing focus+context from the map by alpha-ing out unselected regions, we require the user to select a specific time span from the tooltip.
+
+Hovering on a region in the chart is not reflected in the map. Instead, users have to click on on a region to change the span that is focused on. Furthermore, there is no differentiation between highlighted time spans and a time span that is focused on any more because they have been unified into one. 
 
 
 ## Development Process
