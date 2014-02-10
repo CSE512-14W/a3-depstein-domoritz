@@ -94,14 +94,6 @@ h5 {
   display: inline;
 }
 
-#legend {
-
-}
-
-.legendentry {
-  
-}
-
 .move {
   fill: transparent;
   stroke: red;
@@ -113,8 +105,4 @@ h5 {
   fill-opactiy: .6;
   stroke: #4682B4;
   stroke-width: 1.5px;
-}
-
-.y.axis .tick text {
-  fill: red;
 }
