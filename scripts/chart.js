@@ -91,7 +91,7 @@ var chart = (function() {
     }), function(d) {
       return d.steps;
     }));
-    d3.select("#heart_summary").html(sprintf("%.2f", d3.mean(heartrate_data.filter(function (d) {
+    d3.select("#heart_summary").html(sprintf("%.2f bpm", d3.mean(heartrate_data.filter(function (d) {
       return d.date >= extent[0] && d.date <= extent[1];
     }), function(d) {
       return d.heartrate;
