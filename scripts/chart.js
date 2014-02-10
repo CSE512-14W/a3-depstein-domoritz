@@ -118,7 +118,7 @@ var chart = (function() {
           heartrate_data = new_heartrate_data;
 
           x.domain(d3.extent(heartrate_data.map(function(d) { return d.date; })));
-          y.domain([0, d3.max(heartrate_data.map(function(d) { return d.heartrate; }))]);
+          y.domain([0, 5+d3.max(heartrate_data.map(function(d) { return d.heartrate; }))]);
           x2.domain(x.domain());
 
           focus.selectAll(".steps")
@@ -136,8 +136,8 @@ var chart = (function() {
             .attr("class", "floors")
             .attr("x", function(d) { return x(d.date) + 0.5; })
             .attr("width", 0.5 )
-            .attr("y", function(d) { return y(10*d.floors);})
-            .attr("height", function(d) {return height - y(10*d.floors); });
+            .attr("y", function(d) { return y(30*d.floors);})
+            .attr("height", function(d) {return height - y(30*d.floors); });
 
           focus.append("path")
               .datum(heartrate_data)

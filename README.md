@@ -67,7 +67,9 @@ Instead of hovering over the bars in the chart and having the information update
 
 Instead of implementing focus+context from the map by alpha-ing out unselected regions, we require the user to select a specific time span from the tooltip.
 
-Hovering on a region in the chart is not reflected in the map. Instead, users have to click on on a region to change the span that is focused on. Furthermore, there is no differentiation between highlighted time spans and a time span that is focused on any more because they have been unified into one. 
+Hovering on a region in the chart is not reflected in the map. Instead, users have to click on on a region to change the span that is focused on. Furthermore, there is no differentiation between highlighted time spans and a time span that is focused on any more because they have been unified into one.
+
+Instead of displaying all 3 data types, the y-axis only shows heart rate. We thought that labeling all 3 data types would be overwhelming and look messy.
 
 
 ## Development Process
