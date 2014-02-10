@@ -18,8 +18,7 @@ var chart = (function() {
 
   var x = d3.time.scale().range([0, width]),
       x2 = d3.time.scale().range([0, width]),
-      y = d3.scale.linear().range([height, 0]),
-      y2 = d3.scale.linear().range([height2, 0]);
+      y = d3.scale.linear().range([height, 0]);
 
   var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.time.format("%H:%M")),
       xAxis2 = d3.svg.axis().scale(x2).orient("bottom").tickFormat(d3.time.format("%H:%M")),
@@ -28,7 +27,7 @@ var chart = (function() {
   var heartRateLine = d3.svg.line()
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d.heartrate); })
-      .interpolate("bundle");
+      .interpolate("cardinal");
 
   var svg = d3.select("#plot").append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -96,7 +95,7 @@ var chart = (function() {
     }), function(d) {
       return d.heartrate;
     })));
-    d3.select('#range_summary').html(sprintf("from %s to %s (%s minutes)", timeFormat(extent[0]), timeFormat(extent[1]), Math.round((extent[1] - extent[0])/(1000*60))));
+    d3.select('#range_summary').html(sprintf("from %s to %s (%d minutes)", timeFormat(extent[0]), timeFormat(extent[1]), (extent[1] - extent[0])/(1000*60)));
   };
 
   d3.json("data/fitbit_steps.json", function(error, new_step_data) {
@@ -118,10 +117,9 @@ var chart = (function() {
         d3.csv("data/heartrate_full.csv", type, function(error, new_heartrate_data) {
           heartrate_data = new_heartrate_data;
 
-          x.domain(d3.extent(step_data.map(function(d) { return d.date; })));
-          y.domain([0, d3.max(step_data.map(function(d) { return d.steps; }))]);
+          x.domain(d3.extent(heartrate_data.map(function(d) { return d.date; })));
+          y.domain([0, d3.max(heartrate_data.map(function(d) { return d.heartrate; }))]);
           x2.domain(x.domain());
-          y2.domain(y.domain());
 
           focus.selectAll(".steps")
             .data(step_data)
