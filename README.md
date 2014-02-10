@@ -27,7 +27,7 @@ The data contained 24 hours (at 1-minute intervals) of:
   
 The basic overview of the interface is here:
 
-![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/summary.jpg =400x300)
+![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/summary.jpg)
 
 We have two main views, a chart and a map. The chart displays the step, flight, and heart rate data, while the locations appear on the map. The x-axis of the chart is time, while the times of each event appear in tooltips on the map. We used a focus+context view for the chart, with the context view beneath the chart colored according to the places visited. To the right of the chart are a legend and some summary information about the current region selected.
 
@@ -37,27 +37,27 @@ We really wanted the interaction techniques to promote exploration of patterns i
 
 By hovering on one of the bars at the top of the chart (representing a current location or transport type), the corresponding tooltip appears on the map.
 
-![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/hover_bar.jpg =400x300)
+![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/hover_bar.jpg)
 
 Hovering on a specific bar changes the summary to show statistics of the current bar.
 
-![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/select_day.jpg =400x300)
+![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/select_day.jpg)
 
 The user can select a specific day to look at. We do not anticipate implementing this functionality, as doing so would require more data than we currently have available (but we anticipate the implementation of this feature would be fairly trivial).
 
-![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/select_home.jpg =400x300)
+![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/select_home.jpg)
 
 The user can also click on features on the map itself, like selecting home.
 
-![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/home_selected.jpg =400x300)
+![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/home_selected.jpg)
 
 Doing so will update the chart, alpha-ing down the unselected regions.
 
-![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/select_span.jpg =400x300)
+![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/select_span.jpg)
 
 As described before, we implemented focus+context. This means that the user can select a span
 
-![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/span_selected.jpg =400x300)
+![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/span_selected.jpg)
 
 And that span will then be focused on in the above chart, as well as highlighted in the map.
 
