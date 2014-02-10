@@ -76,6 +76,8 @@ Instead of implementing focus+context from the map by alpha-ing out unselected r
   * 2 hours on the initial design of the story board
   * several hours on a failed attempt to use a D3 layer with leaflet (eventually we switched to pure Leaflet)
   * 7 hours on the map and the interaction between the map and the chart
-  * 5 hours on implementing visualizing data on the chart and enabling brushing interactions
   * 1 hour on the summary pane and legend
+  * 7 hours on chart
+  * 6 hours on the map
+  * 8 hours on the interaction between the map and the chart and refinements
 * Adding interaction between the map and the chart and within the chart and the map took the most time.
