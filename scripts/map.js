@@ -1,4 +1,4 @@
-(function() {
+var map = (function() {
 	var map = L.map('map', {
 		scrollWheelZoom: false
 	}).setView([47.6097, -122.3331], 13);
@@ -41,8 +41,6 @@
 						},
 						properties: {
 							type: "place",
-							// make an id
-							highlightGroup: e.place.id,
 							times: [parseMovesDates(e.startTime, e.endTime)]
 						}
 					};
@@ -57,8 +55,6 @@
 				var properties = activity;
 				properties.type = "move";
 				properties.time = parseMovesDates(activity.startTime, activity.endTime);
-				// make an id
-				properties.highlightGroup = properties.activity + timeFormat(properties.time[0]);
 
 				activity.trackPoints.forEach(function(tp) {
 					coords.push([tp.lon, tp.lat]);
@@ -71,8 +67,7 @@
 							coordinates: [tp.lon, tp.lat]
 						},
 						properties: {
-							type: "trackpoint",
-							highlightGroup: properties.layer
+							type: "trackpoint"
 						}
 					};
 					features.push(feature);
@@ -102,27 +97,27 @@
 			style: function(feature) {
 				var props = feature.properties;
 				if (props.type == "move") {
+					var style = {
+						weight: 7
+					};
 					switch (feature.properties.activity) {
-			            case 'trp': return {color: "green"};
-			            case 'wlk': return {color: "blue"};
-			            case 'run': return {color: "red"};
+			            case 'trp': style.color = "green"; break;
+			            case 'wlk': style.color = "blue"; break;
+			            case 'run': style.color = "red"; break;
 			        }
+			        return style;
 				} else if (props.type == "trackpoint") {
 					return {
 					    radius: 5,
 					    color: "#333",
-					    weight: 1,
-					    opacity: .8,
-					    fillOpacity: 0.5
+					    weight: 1
 					};
 				} else {
 					return {
-					    radius: 10,
+					    radius: 12,
 					    fillColor: "#666",
 					    color: "#000",
-					    weight: 1,
-					    opacity: .8,
-					    fillOpacity: .5
+					    weight: 2
 					};
 				}
 		    },
@@ -163,29 +158,25 @@
 				featureLayer.bindPopup(popupContent);
 
 				map.on("highlight", function(e) {
-					if (e.highlightGroup === undefined || e.highlightGroup === feature.properties.highlightGroup) {
-						featureLayer.setStyle({
-							opacity: .7,
-							fillOpacity: .5
-						});
+					var times = [];
+					if (feature.properties.type == 'place') {
+						times = feature.properties.times;
 					} else {
-						featureLayer.setStyle({
-							opacity: .2,
-							fillOpacity: .2
-						});
+						times = [feature.properties.time];
 					}
-				});
+					var style = {
+						opacity: .2,
+						fillOpacity: .2
+					};
 
-				featureLayer.on({
-			        mouseover: function() {
-			        	map.fireEvent("highlight", {highlightGroup: feature.properties.highlightGroup});
-					//featureLayer.openPopup();
-			        },
-			        mouseout: function() {
-			        	map.fireEvent("highlight", {highlightGroup: undefined});
-					//featureLayer.closePopup();
-			        }
-			    });
+					if (e.range === undefined || contains(e.range, times)) {
+						style = {
+							opacity: .6,
+							fillOpacity: .5
+						};
+					}
+					featureLayer.setStyle(style);
+				});
 		    },
 		    pointToLayer: function (feature, latlng) {
 		        return L.circleMarker(latlng);
@@ -201,10 +192,16 @@
 		}
 
 		// reset highlighting
-		map.fireEvent("highlight", {highlightGroup: undefined})
+		map.fireEvent("highlight", {range: undefined});
 
 		map.fitBounds(geojson.getBounds());
 
 		geojson.addTo(map);
 	});
+
+	return {
+		filterRange: function(range) {
+			map.fireEvent("highlight", {range: range});
+		}
+	};
 }());

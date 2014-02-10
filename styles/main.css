@@ -23,8 +23,13 @@ svg {
 }
 
 #map path {
-  transition-property: stroke-opacity;
-  transition-duration: 0.3s;
+  transition: all .3s ease;
+  transition-property: stroke-opacity, fill-opacity;
+}
+
+#map path:hover {
+  stroke-opacity: 1;
+  fill-opacity: .8;
 }
 
 .overlay {
@@ -58,6 +63,7 @@ svg {
 
 .location {
   opacity:0.5;
+  cursor: pointer;
 }
 
 .location:hover {

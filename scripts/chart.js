@@ -73,6 +73,8 @@ var chart = (function() {
     .attr("width", function(d) { return x(d.date)<x(extent[0])||x(d.date)>x(extent[1])?0:700/((extent[1]-extent[0])/60000); });
     focus.select(".x.axis").call(xAxis);
 
+    map.filterRange(extent);
+
     setSummaryStatistics(extent);
   }
 

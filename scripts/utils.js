@@ -24,8 +24,6 @@ var parseMovesDates = function(startTimeStr, endTimeStr) { //Yes, this function 
   endTime.setMonth(0);
   endTime.setDate(1);
 
-  // console.log("parsed " + startTimeStr + " " + endTimeStr + " as " + [startTime, endTime])
-
   return [startTime, endTime];
 };
 
@@ -34,3 +32,14 @@ var activityNames = {
   wlk: 'Walking',
   trp: 'Transport'
 }
+
+var contains = function(range, times) {
+  // can't use forEach here because we need to return
+  for (var i = times.length - 1; i >= 0; i--) {
+    var time = times[i];
+    if (range[0] <= time[1] && time[0] <= range[1]) {
+      return true;
+    }
+  };
+  return false;
+};
