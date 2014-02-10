@@ -28,7 +28,7 @@ var chart = (function() {
   }
   var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.time.format("%H:%M")),
       xAxis2 = d3.svg.axis().scale(x2).orient("bottom").tickFormat(d3.time.format("%H:%M")),
-      xAxis3 = d3.svg.axis().scale(x).orient("bottom").tickFormat("").tickValues(dateArr).tickSize(-height),
+      //xAxis3 = d3.svg.axis().scale(x).orient("bottom").tickFormat("").tickValues(dateArr).tickSize(-height),
       yAxis = d3.svg.axis().scale(y).orient("left");
       yAxisRight = d3.svg.axis().scale(y2).orient("right"),
       yAxisRight2 = d3.svg.axis().scale(y3).orient("left").ticks(5);
@@ -82,7 +82,7 @@ var chart = (function() {
     focus.selectAll(".floors").attr("width", function(d) { return x(d.date)<x(extent[0])||x(d.date)>x(extent[1])?0:widthCalc; })
     .attr("x", function(d) { return x(d.date) + 9.0*widthCalc/8.0;});
     focus.select(".x.axis").call(xAxis);
-    focus.select(".x.axis.minor").call(xAxis3);
+    //focus.select(".x.axis.minor").call(xAxis3);
 
     map.filterRange(brush.empty() ? undefined : extent);
 
@@ -156,10 +156,12 @@ var chart = (function() {
               .attr("class", "heartrate")
               .attr("d", heartRateLine);
 
+          /*
           focus.append("g")
               .attr("class", "x axis minor")
               .attr("transform", "translate(0," + height + ")")
               .call(xAxis3);
+          */
 
           focus.append("g")
               .attr("class", "x axis")
