@@ -83,6 +83,10 @@ svg {
   stroke: #000;
   shape-rendering: crispEdges;
 }
+.axis .minor line {
+  stroke: #777;
+  stroke-dasharray: 2,2;
+}
 
 .brush .extent {
   stroke: #fff;
