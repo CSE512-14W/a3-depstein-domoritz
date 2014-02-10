@@ -1,6 +1,6 @@
 var chart = (function() {
-  var margin = {top: 10, right: 10, bottom: 80, left: 40},
-      margin2 = {top: 450, right: 10, bottom: 20, left: 40},
+  var margin = {top: 10, right: 40, bottom: 80, left: 40},
+      margin2 = {top: 450, right: 40, bottom: 20, left: 40},
       width = parseInt(d3.select("#plot").style('width'), 10) - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom,
       height2 = 500 - margin2.top - margin2.bottom,
@@ -18,11 +18,13 @@ var chart = (function() {
 
   var x = d3.time.scale().range([0, width]),
       x2 = d3.time.scale().range([0, width]),
-      y = d3.scale.linear().range([height, 0]);
+      y = d3.scale.linear().range([height, 0])
+      y2 = d3.scale.linear().range([height, 0]);
 
   var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.time.format("%H:%M")),
       xAxis2 = d3.svg.axis().scale(x2).orient("bottom").tickFormat(d3.time.format("%H:%M")),
-      yAxis = d3.svg.axis().scale(y).orient("left");
+      yAxis = d3.svg.axis().scale(y).orient("left"),
+      yAxisRight = d3.svg.axis().scale(y2).orient("right");
 
   var heartRateLine = d3.svg.line()
       .x(function(d) { return x(d.date); })
@@ -128,7 +130,7 @@ var chart = (function() {
             .attr("x", function(d) { return x(d.date) - 0.5; })
             .attr("width", 0.5 )
             .attr("y", function(d) { return y(.9*d.steps);})
-            .attr("height", function(d) {return height - y(d.steps*0.9); });
+            .attr("height", function(d) {return height - y(.9*d.steps); });
 
           focus.selectAll(".floors")
             .data(floor_data)
@@ -159,6 +161,12 @@ var chart = (function() {
               .style("text-anchor", "end")
               .style("fill", "red")
               .text("Heart rate (bpm)");
+
+          focus.append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(" + width + " ,0)")
+            .style("fill", "blue")
+            .call(yAxisRight);
 
           context.append("g")
               .attr("class", "x axis")
