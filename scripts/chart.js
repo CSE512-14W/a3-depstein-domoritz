@@ -66,11 +66,12 @@ var chart = (function() {
     focus.selectAll(".location").attr("x", function(d) { return d3.max([x(d.startTime), 0]); })
     .attr("width", function(d) { return d3.max([d3.min([x(d.endTime) - d3.max([x(d.startTime), 0]), x(extent[1]) - d3.max([x(d.startTime), 0])]), 0]); });
 
-    focus.selectAll(".steps").attr("x", function(d) { return x(d.date); })
-    .attr("width", function(d) { return x(d.date)<x(extent[0])||x(d.date)>x(extent[1])?0:700/((extent[1]-extent[0])/60000); });
+    var widthCalc = 350/((extent[1]-extent[0])/60000);
+    focus.selectAll(".steps").attr("width", function(d) { return x(d.date)<x(extent[0])||x(d.date)>x(extent[1])?0:widthCalc; })
+    .attr("x", function(d) { return x(d.date) });
 
-    focus.selectAll(".floors").attr("x", function(d) { return x(d.date); })
-    .attr("width", function(d) { return x(d.date)<x(extent[0])||x(d.date)>x(extent[1])?0:700/((extent[1]-extent[0])/60000); });
+    focus.selectAll(".floors").attr("width", function(d) { return x(d.date)<x(extent[0])||x(d.date)>x(extent[1])?0:widthCalc; })
+    .attr("x", function(d) { return x(d.date) + 9.0*widthCalc/8.0;});
     focus.select(".x.axis").call(xAxis);
 
     map.filterRange(extent);
@@ -124,7 +125,7 @@ var chart = (function() {
             .data(step_data)
             .enter().append("rect")
             .attr("class", "steps")
-            .attr("x", function(d) { return x(d.date); })
+            .attr("x", function(d) { return x(d.date) - 0.5; })
             .attr("width", 0.5 )
             .attr("y", function(d) { return y(d.steps*0.9);})
             .attr("height", function(d) {return height - y(d.steps*0.9); });
@@ -133,7 +134,7 @@ var chart = (function() {
             .data(floor_data)
             .enter().append("rect")
             .attr("class", "floors")
-            .attr("x", function(d) { return x(d.date); })
+            .attr("x", function(d) { return x(d.date) + 0.5; })
             .attr("width", 0.5 )
             .attr("y", function(d) { return y(10*d.floors);})
             .attr("height", function(d) {return height - y(10*d.floors); });
