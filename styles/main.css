@@ -69,8 +69,8 @@ svg {
 }
 
 .location:hover {
+  transition: all .4s ease;
   transition-property: opacity;
-  transition-duration: 0.2s;
   opacity: 1.0;
 }
 

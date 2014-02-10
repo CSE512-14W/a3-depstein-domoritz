@@ -75,7 +75,7 @@ var chart = (function() {
     .attr("x", function(d) { return x(d.date) + 9.0*widthCalc/8.0;});
     focus.select(".x.axis").call(xAxis);
 
-    map.filterRange(extent);
+    map.filterRange(brush.empty() ? undefined : extent);
 
     setSummaryStatistics(extent);
   }
@@ -177,6 +177,7 @@ var chart = (function() {
                 datum.startTime = times[0];
                 datum.endTime = times[1];
                 datum.name = s.place.name;
+                datum.color = colorPalette[toKey[datum.name]];
 
                 domainValues[datum.name] = 1;
                 timespans.push(datum);
@@ -187,6 +188,7 @@ var chart = (function() {
                   datum.startTime = times[0];
                   datum.endTime = times[1];
                   datum.name = activityNames[a.activity];
+                  datum.color = colorPalette[toKey[datum.name]];
 
                   domainValues[datum.name] = 1;
                   timespans.push(datum);
@@ -194,7 +196,6 @@ var chart = (function() {
               }
             });
 
-            var colorScale = d3.scale.category10();
             domainEntries = [];
             var count = 0;
             for(var key in domainValues) {
@@ -202,7 +203,7 @@ var chart = (function() {
               var entry = {};
               entry["name"] = key;
               entry["index"] = domainValues[key];
-              entry["color"] = colorScale(domainValues[key]);
+              entry["color"] = colorPalette[toKey[key]];
               domainEntries.push(entry);
             }
 
@@ -220,14 +221,14 @@ var chart = (function() {
               .attr("class", "legendentry")
               .attr("width", 10)
               .attr("height", 10)
-              .style("fill", function(d) {return d["color"]; })
+              .style("fill", function(d) {return d.color; })
               .style("stroke", "black");
 
               legend_entries.append("text")
                 .attr("dy", ".3em")
                 .attr("x", 15)
                 .attr("y", 5)
-                .text(function(d) {return d["name"]; });
+                .text(function(d) {return d.name; });
 
             //Context version
             context.selectAll(".timeregion")
@@ -238,7 +239,7 @@ var chart = (function() {
             .attr("width", function(d) { return x(d.endTime) - x(d.startTime); })
             .attr("y", 0)
             .attr("height", height2 - 4)
-            .style("fill", function(d) { return colorScale(domainValues[d.name]); });
+            .style("fill", function(d) { return d.color; });
 
             //Focus version
             focus.selectAll(".location")
@@ -249,7 +250,7 @@ var chart = (function() {
             .attr("width", function(d) { return x(d.endTime) - x(d.startTime); })
             .attr("y", 0)
             .attr("height", location_height)
-            .style("fill", function(d) { return colorScale(domainValues[d.name]); })
+            .style("fill", function(d) { return d['color']; })
             .on("click", clickLocation);
 
             context.append("g")

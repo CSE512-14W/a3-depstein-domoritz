@@ -39,7 +39,7 @@ var contains = function(range, times) {
   // can't use forEach here because we need to return
   for (var i = times.length - 1; i >= 0; i--) {
     var time = times[i];
-    if (range[0] <= time[1] && time[0] <= range[1]) {
+    if (range[0] < time[1] && time[0] < range[1]) {
       return true;
     }
   };
@@ -50,3 +50,24 @@ var roundToMinute = function(time) {
   var coeff = 1000 * 60;
   return new Date(Math.floor(time.getTime() / coeff) * coeff)
 }
+
+var colorPalette = {
+  home: '#b2182b',
+  cse: '#542788',
+  park: '#e08214',
+  unknown: '#4d4d4d',
+
+  trp: '#4daf4a',
+  wlk: '#2166ac',
+  run: '#053061'
+};
+
+var toKey = {
+  'Home': 'home',
+  'Transport' : 'trp',
+  'Walking': 'wlk',
+  'Running': 'run',
+  'The Park In Bellevue': 'park',
+  'UW: Paul G. Allen Center for Computer Science & Engineering' : 'cse',
+  undefined: 'unknown'
+};

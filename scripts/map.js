@@ -99,9 +99,9 @@ var map = (function() {
 						weight: 7
 					};
 					switch (feature.properties.activity) {
-			            case 'trp': style.color = "green"; break;
-			            case 'wlk': style.color = "blue"; break;
-			            case 'run': style.color = "red"; break;
+			            case 'trp': style.color = colorPalette.trp; break;
+			            case 'wlk': style.color = colorPalette.wlk; break;
+			            case 'run': style.color = colorPalette.run; break;
 			        }
 			        return style;
 				} else if (props.type == "trackpoint") {
@@ -113,7 +113,7 @@ var map = (function() {
 				} else {
 					return {
 					    radius: 12,
-					    fillColor: "#666",
+					    fillColor: colorPalette[toKey[props.name]],
 					    color: "#000",
 					    weight: 2
 					};
@@ -167,10 +167,15 @@ var map = (function() {
 						fillOpacity: .2
 					};
 
-					if (e.range === undefined || contains(e.range, times)) {
+					if (e.range === undefined) {
 						style = {
 							opacity: .6,
-							fillOpacity: .5
+							fillOpacity: .6
+						};
+					} else if (contains(e.range, times)) {
+						style = {
+							opacity: 1,
+							fillOpacity: .9
 						};
 					}
 					featureLayer.setStyle(style);
