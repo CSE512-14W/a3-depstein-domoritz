@@ -16,6 +16,7 @@ body {
 
 svg {
   font: 10px sans-serif;
+  shape-rendering: auto;
 }
 
 .col-lg-9 {
@@ -42,6 +43,7 @@ svg {
 }
 
 .heartrate {
+  stroke-width: 2;
   stroke: red;
   fill: none;
   clip-path: url(#clip);
@@ -50,19 +52,19 @@ svg {
 .steps {
   fill: steelblue;
   stroke: none;
-  opacity:0.8;
+  opacity: 1;
   clip-path: url(#clip);
 }
 
 .floors {
   fill: forestgreen;
   stroke: none;
-  opacity:0.8;
+  opacity: 1;
   clip-path: url(#clip);
 }
 
 .location {
-  opacity:0.5;
+  opacity: 0.5;
   cursor: pointer;
 }
 
@@ -119,4 +121,8 @@ h5 {
   fill-opactiy: .6;
   stroke: #4682B4;
   stroke-width: 1.5px;
+}
+
+.y.axis .tick text {
+  fill: red;
 }

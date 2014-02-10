@@ -21,13 +21,14 @@ var chart = (function() {
       y = d3.scale.linear().range([height, 0]),
       y2 = d3.scale.linear().range([height2, 0]);
 
-  var xAxis = d3.svg.axis().scale(x).orient("bottom"),
-      xAxis2 = d3.svg.axis().scale(x2).orient("bottom"),
+  var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.time.format("%H:%M")),
+      xAxis2 = d3.svg.axis().scale(x2).orient("bottom").tickFormat(d3.time.format("%H:%M")),
       yAxis = d3.svg.axis().scale(y).orient("left");
 
-  var heartRateArea = d3.svg.line()
+  var heartRateLine = d3.svg.line()
       .x(function(d) { return x(d.date); })
-      .y(function(d) { return y(d.heartrate); });
+      .y(function(d) { return y(d.heartrate); })
+      .interpolate("bundle");
 
   var svg = d3.select("#plot").append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -62,7 +63,7 @@ var chart = (function() {
       brush.extent(extent);
       context.selectAll(".brush").call(brush);
     }
-    focus.select(".heartrate").attr("d", heartRateArea);
+    focus.select(".heartrate").attr("d", heartRateLine);
     focus.selectAll(".location").attr("x", function(d) { return d3.max([x(d.startTime), 0]); })
     .attr("width", function(d) { return d3.max([d3.min([x(d.endTime) - d3.max([x(d.startTime), 0]), x(extent[1]) - d3.max([x(d.startTime), 0])]), 0]); });
 
@@ -127,7 +128,7 @@ var chart = (function() {
             .attr("class", "steps")
             .attr("x", function(d) { return x(d.date) - 0.5; })
             .attr("width", 0.5 )
-            .attr("y", function(d) { return y(d.steps*0.9);})
+            .attr("y", function(d) { return y(.9*d.steps);})
             .attr("height", function(d) {return height - y(d.steps*0.9); });
 
           focus.selectAll(".floors")
@@ -142,7 +143,7 @@ var chart = (function() {
           focus.append("path")
               .datum(heartrate_data)
               .attr("class", "heartrate")
-              .attr("d", heartRateArea);
+              .attr("d", heartRateLine);
 
           focus.append("g")
               .attr("class", "x axis")
@@ -151,7 +152,14 @@ var chart = (function() {
 
           focus.append("g")
               .attr("class", "y axis")
-              .call(yAxis);
+              .call(yAxis).append("text")
+            .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", ".81em")
+              .attr("dx", -30)
+              .style("text-anchor", "end")
+              .style("fill", "red")
+              .text("Heart rate (bpm)");
 
           context.append("g")
               .attr("class", "x axis")
@@ -258,9 +266,40 @@ var chart = (function() {
               .attr("stroke-width", 1)
               .attr("stroke", "black");
 
-            hoverBar.append("text")
+            var hoverRect = hoverBar
+              .append("g")
+              .attr('class', 'hover');
+
+            hoverRect
+              .append("rect")
+              .attr('width', 200)
+              .attr("height", 20)
+              .attr("y", "-10px")
+              .style('opacity', .8)
+              .style('fill', 'black');
+
+            hoverRect
+              .append("text")
               .attr("x", 9)
-              .attr("dy", ".35em");
+              .attr("dy", "3px")
+              .style("fill", "white");
+
+            var timeRect = hoverBar
+              .append("g")
+              .attr('class', 'time');
+
+            timeRect
+              .append("rect")
+              .attr('width', 100)
+              .attr("height", 16)
+              .style('opacity', .8)
+              .style('fill', 'white');
+
+            timeRect
+              .append("text")
+              .attr("x", 9)
+              .attr("dy", "14px")
+              .style("fill", "black");
 
             svg.append("rect")
               .attr("class", "overlay")
@@ -280,9 +319,15 @@ var chart = (function() {
               var hr = heartrate_data[bisectDate(heartrate_data, x0)-1];
               var st = step_data[bisectDate(step_data, x0)-1];
               var fl = floor_data[bisectDate(floor_data, x0)-1];
-              hoverBar.select("text").attr("transform", "translate(" + mouseX + "," + mouseY + ")");
-              hoverBar.select("text").text(sprintf("Heart rate:%.2f, Steps:%d, Floors:%d", hr.heartrate, st.steps, fl.floors));
-              hoverBar.select("line").attr("transform", "translate(" + mouseX + ",0)");
+
+              var xLoc = (x(roundToMinute(x0)) + margin.left);
+
+              hoverBar.select("g.hover").attr("transform", "translate(" + xLoc + "," + mouseY + ")");
+              hoverBar.select(".hover text").text(sprintf("Heart rate: %.2f, Steps: %d, Floors: %d", hr.heartrate, st.steps, fl.floors));
+
+              hoverBar.select("g.time").attr("transform", "translate(" + xLoc + ", "+(height + 12)+")");
+              hoverBar.select(".time text").text(sprintf("Time: %s", timeFormat(x0)));
+              hoverBar.select("line").attr("transform", "translate(" + xLoc + ",0)");
             }
 
             function clickLocation(d) {

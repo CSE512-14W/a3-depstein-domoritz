@@ -11,8 +11,6 @@ var map = (function() {
         row ='<tr><th>{key}</th><td>{value}</td></tr>',
         rangeTmpl = '<a href="#" class="brushRange" data-begin="{tsb}" data-end="{tse}">from {begin} to {end}</a>';
 
-    var timeFormat = d3.time.format("%H:%M");
-
     // place features, separate so that we can aggregate
     var places = {};
 

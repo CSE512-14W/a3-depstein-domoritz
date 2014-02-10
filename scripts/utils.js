@@ -27,6 +27,8 @@ var parseMovesDates = function(startTimeStr, endTimeStr) { //Yes, this function 
   return [startTime, endTime];
 };
 
+var timeFormat = d3.time.format("%H:%M");
+
 var activityNames = {
   run: 'Running',
   wlk: 'Walking',
@@ -43,3 +45,8 @@ var contains = function(range, times) {
   };
   return false;
 };
+
+var roundToMinute = function(time) {
+  var coeff = 1000 * 60;
+  return new Date(Math.floor(time.getTime() / coeff) * coeff)
+}
