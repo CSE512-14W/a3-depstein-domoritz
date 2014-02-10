@@ -102,14 +102,6 @@ h5 {
   
 }
 
-#step_summary {
-  display: inline;
-}
-
-#heart_summary {
-  display: inline;
-}
-
 .move {
   fill: transparent;
   stroke: red;

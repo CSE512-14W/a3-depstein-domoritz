@@ -96,7 +96,8 @@ var chart = (function() {
     }), function(d) {
       return d.heartrate;
     })));
-  }
+    d3.select('#range_summary').html(sprintf("from %s to %s (%s minutes)", timeFormat(extent[0]), timeFormat(extent[1]), Math.round((extent[1] - extent[0])/(1000*60))));
+  };
 
   d3.json("data/fitbit_steps.json", function(error, new_step_data) {
 
