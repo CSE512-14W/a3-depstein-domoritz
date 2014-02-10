@@ -85,7 +85,7 @@ svg {
 }
 .axis .minor line {
   stroke: #777;
-  stroke-dasharray: 2,2;
+  opacity: 0.2;
 }
 
 .brush .extent {
@@ -96,14 +96,6 @@ svg {
 
 h5 {
   display: inline;
-}
-
-#legend {
-
-}
-
-.legendentry {
-  
 }
 
 .move {
@@ -117,8 +109,4 @@ h5 {
   fill-opactiy: .6;
   stroke: #4682B4;
   stroke-width: 1.5px;
-}
-
-.y.axis .tick text {
-  fill: red;
 }

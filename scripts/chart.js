@@ -1,6 +1,6 @@
 var chart = (function() {
-  var margin = {top: 10, right: 10, bottom: 80, left: 40},
-      margin2 = {top: 450, right: 10, bottom: 20, left: 40},
+  var margin = {top: 10, right: 65, bottom: 80, left: 45},
+      margin2 = {top: 450, right: 65, bottom: 20, left: 45},
       width = parseInt(d3.select("#plot").style('width'), 10) - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom,
       height2 = 500 - margin2.top - margin2.bottom,
@@ -18,12 +18,20 @@ var chart = (function() {
 
   var x = d3.time.scale().range([0, width]),
       x2 = d3.time.scale().range([0, width]),
-      y = d3.scale.linear().range([height, 0]);
+      y = d3.scale.linear().range([height, 0]), // heartrate
+      y2 = d3.scale.linear().range([height, 0]), // steps
+      y3 = d3.scale.linear().range([height, 0]); // floors
 
+  dateArr = [];
+  for (var i = 0; i < 24; i++) {
+    dateArr.push(new Date(i*1000*60*60));
+  }
   var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.time.format("%H:%M")),
       xAxis2 = d3.svg.axis().scale(x2).orient("bottom").tickFormat(d3.time.format("%H:%M")),
-      xAxis3 = d3.svg.axis().scale(x2).orient("bottom").tickFormat(d3.time.format("%H:%M")).tickSize(-height),
+      xAxis3 = d3.svg.axis().scale(x).orient("bottom").tickFormat("").tickValues(dateArr).tickSize(-height),
       yAxis = d3.svg.axis().scale(y).orient("left");
+      yAxisRight = d3.svg.axis().scale(y2).orient("right"),
+      yAxisRight2 = d3.svg.axis().scale(y3).orient("left").ticks(5);
 
   var heartRateLine = d3.svg.line()
       .x(function(d) { return x(d.date); })
@@ -74,7 +82,7 @@ var chart = (function() {
     focus.selectAll(".floors").attr("width", function(d) { return x(d.date)<x(extent[0])||x(d.date)>x(extent[1])?0:widthCalc; })
     .attr("x", function(d) { return x(d.date) + 9.0*widthCalc/8.0;});
     focus.select(".x.axis").call(xAxis);
-    focus.select(".x.axis").call(xAxis3);
+    focus.select(".x.axis.minor").call(xAxis3);
 
     map.filterRange(brush.empty() ? undefined : extent);
 
@@ -120,7 +128,9 @@ var chart = (function() {
           heartrate_data = new_heartrate_data;
 
           x.domain(d3.extent(heartrate_data.map(function(d) { return d.date; })));
-          y.domain([0, 5+d3.max(heartrate_data.map(function(d) { return d.heartrate; }))]);
+          y.domain([0, 1.15 * d3.max(heartrate_data.map(function(d) { return d.heartrate; }))]);
+          y2.domain([0, 1.4 * d3.max(step_data.map(function(d) { return d.steps; }))]);
+          y3.domain([0, 1.4 * d3.max(floor_data.map(function(d) { return d.floors; }))]);
           x2.domain(x.domain());
 
           focus.selectAll(".steps")
@@ -129,8 +139,8 @@ var chart = (function() {
             .attr("class", "steps")
             .attr("x", function(d) { return x(d.date) - 0.5; })
             .attr("width", 0.5 )
-            .attr("y", function(d) { return y(.9*d.steps);})
-            .attr("height", function(d) {return height - y(d.steps*0.9); });
+            .attr("y", function(d) { return y2(d.steps);})
+            .attr("height", function(d) {return height - y2(d.steps); });
 
           focus.selectAll(".floors")
             .data(floor_data)
@@ -138,8 +148,8 @@ var chart = (function() {
             .attr("class", "floors")
             .attr("x", function(d) { return x(d.date) + 0.5; })
             .attr("width", 0.5 )
-            .attr("y", function(d) { return y(30*d.floors);})
-            .attr("height", function(d) {return height - y(30*d.floors); });
+            .attr("y", function(d) { return y3(d.floors);})
+            .attr("height", function(d) {return height - y3(d.floors); });
 
           focus.append("path")
               .datum(heartrate_data)
@@ -147,25 +157,49 @@ var chart = (function() {
               .attr("d", heartRateLine);
 
           focus.append("g")
-              .attr("class", "x axis")
-              .attr("transform", "translate(0," + height + ")")
-              .call(xAxis);
-
-          focus.append("g")
               .attr("class", "x axis minor")
               .attr("transform", "translate(0," + height + ")")
               .call(xAxis3);
 
           focus.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis);
+
+          focus.append("g")
               .attr("class", "y axis")
+              .style("fill", "red")
               .call(yAxis).append("text")
             .attr("transform", "rotate(-90)")
               .attr("y", 6)
-              .attr("dy", ".81em")
+              .attr("dy", -40)
               .attr("dx", -30)
               .style("text-anchor", "end")
-              .style("fill", "red")
               .text("Heart rate (bpm)");
+
+          focus.append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(" + (width + 25) + " ,0)")
+            .style("fill", "steelblue")
+            .call(yAxisRight).append("text")
+          .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", 30)
+            .attr("dx", -30)
+            .style("text-anchor", "end")
+            .text("Steps");
+
+          focus.append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(" + (width + 20) + " ,0)")
+            .style("fill", "forestgreen")
+            .call(yAxisRight2).append("text")
+          .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", -28)
+            .attr("dx", -30)
+            .style("text-anchor", "end")
+            .text("Floors");
 
           context.append("g")
               .attr("class", "x axis")
