@@ -69,6 +69,8 @@ Instead of implementing focus+context from the map by alpha-ing out unselected r
 
 Hovering on a region in the chart is not reflected in the map. Instead, users have to click on on a region to change the span that is focused on. Furthermore, there is no differentiation between highlighted time spans and a time span that is focused on any more because they have been unified into one.
 
+We decided to move the location indicators to the bottom of the chart in order to support easier cross-interaction between the map and the chart and easier comparison of the focus and context area by moving them closer together.
+
 
 ## Development Process
 
