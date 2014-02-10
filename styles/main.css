@@ -43,7 +43,7 @@ svg {
 }
 
 .heartrate {
-  stroke-width: 2;
+  stroke-width: 1;
   stroke: red;
   fill: none;
   clip-path: url(#clip);
