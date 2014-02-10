@@ -33,5 +33,7 @@ A paragraph explaining changes between the storyboard and the final implementati
 * We spent about
   * 2 hours on the initial design of the story board
   * several hours on a failed attempt to use a D3 layer with leaflet (eventually we switched to pure Leaflet)
-  * 7 hours on the map and the interaction between the map and the chart
+  * ? hours on the chart
+  * 6 hours on the map
+  * 8 hours on the interaction between the map and the chart and refinements
 * Adding interaction between the map and the chart and within the chart and the map took the most time.
