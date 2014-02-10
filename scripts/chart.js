@@ -236,7 +236,7 @@ var chart = (function() {
             .attr("x", function(d) { return x(d.startTime); })
             .attr("width", function(d) { return x(d.endTime) - x(d.startTime); })
             .attr("y", 0)
-            .attr("height", height2)
+            .attr("height", height2 - 4)
             .style("fill", function(d) { return colorScale(domainValues[d.name]); });
 
             //Focus version
@@ -256,7 +256,7 @@ var chart = (function() {
               .call(brush)
             .selectAll("rect")
               .attr("y", -6)
-              .attr("height", height2 + 7);
+              .attr("height", height2 + 8);
 
             hoverBar.append("line")
               .attr("x1", 0)
