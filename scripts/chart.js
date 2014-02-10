@@ -1,5 +1,5 @@
 var chart = (function() {
-  var margin = {top: 10, right: 65, bottom: 80, left: 45},
+  var margin = {top: 10, right: 65, bottom: 100, left: 45},
       margin2 = {top: 450, right: 65, bottom: 20, left: 45},
       width = parseInt(d3.select("#plot").style('width'), 10) - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom,
@@ -165,7 +165,7 @@ var chart = (function() {
 
           focus.append("g")
               .attr("class", "x axis")
-              .attr("transform", "translate(0," + height + ")")
+              .attr("transform", "translate(0," + (height + location_height) + ")")
               .call(xAxis);
 
           focus.append("g")
@@ -180,28 +180,28 @@ var chart = (function() {
               .text("Heart rate (bpm)");
 
           focus.append("g")
-            .attr("class", "y axis")
-            .attr("transform", "translate(" + (width + 25) + " ,0)")
-            .style("fill", "steelblue")
-            .call(yAxisRight).append("text")
-          .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", 30)
-            .attr("dx", -30)
-            .style("text-anchor", "end")
-            .text("Steps");
+              .attr("class", "y axis")
+              .attr("transform", "translate(" + (width + 25) + " ,0)")
+              .style("fill", "steelblue")
+              .call(yAxisRight).append("text")
+            .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", 30)
+              .attr("dx", -30)
+              .style("text-anchor", "end")
+              .text("Steps");
 
           focus.append("g")
-            .attr("class", "y axis")
-            .attr("transform", "translate(" + (width + 20) + " ,0)")
-            .style("fill", "forestgreen")
-            .call(yAxisRight2).append("text")
-          .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", -28)
-            .attr("dx", -30)
-            .style("text-anchor", "end")
-            .text("Floors");
+              .attr("class", "y axis")
+              .attr("transform", "translate(" + (width + 20) + " ,0)")
+              .style("fill", "forestgreen")
+              .call(yAxisRight2).append("text")
+            .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", -28)
+              .attr("dx", -30)
+              .style("text-anchor", "end")
+              .text("Floors");
 
           context.append("g")
               .attr("class", "x axis")
@@ -289,7 +289,7 @@ var chart = (function() {
             .attr("class", "location")
             .attr("x", function(d) { return x(d.startTime); })
             .attr("width", function(d) { return x(d.endTime) - x(d.startTime); })
-            .attr("y", 0)
+            .attr("y", height)
             .attr("height", location_height)
             .style("fill", function(d) { return d['color']; })
             .on("click", clickLocation);
@@ -305,7 +305,7 @@ var chart = (function() {
               .attr("x1", 0)
               .attr("x2", 0)
               .attr("y1", margin.top + location_height)
-              .attr("y2", height + margin.top)
+              .attr("y2", height + location_height + margin.top)
               .attr("stroke-width", 1)
               .attr("stroke", "black");
 
@@ -368,7 +368,7 @@ var chart = (function() {
               hoverBar.select("g.hover").attr("transform", "translate(" + xLoc + "," + mouseY + ")");
               hoverBar.select(".hover text").text(sprintf("Heart rate: %.2f, Steps: %d, Floors: %d", hr.heartrate, st.steps, fl.floors));
 
-              hoverBar.select("g.time").attr("transform", "translate(" + xLoc + ", "+(height + 12)+")");
+              hoverBar.select("g.time").attr("transform", "translate(" + xLoc + ", "+(height + location_height + 12)+")");
               hoverBar.select(".time text").text(sprintf("Time: %s", timeFormat(x0)));
               hoverBar.select("line").attr("transform", "translate(" + xLoc + ",0)");
             }
