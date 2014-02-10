@@ -33,7 +33,7 @@ We have two main views, a chart and a map. The chart displays the step, flight, 
 
 We really wanted the interaction techniques to promote exploration of patterns in this data. As such, we intended for the visualization to be responsive to what the user was interested in learning more about by making nearly everything hoverable or selectable.
 
-![summary](https://raw.github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/home_hovered.jpg=400x300)
+![summary](https://github.com/CSE512-14W/a3-depstein-domoritz/gh-pages/pictures/home_hovered.jpg =400x300)
 
 By hovering on one of the bars at the top of the chart (representing a current location or transport type), the corresponding tooltip appears on the map.
 
