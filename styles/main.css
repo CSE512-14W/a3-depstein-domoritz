@@ -61,7 +61,9 @@ svg {
 }
 
 .location:hover {
-  opacity:1.0;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+  opacity: 1.0;
 }
 
 .timeregion {
