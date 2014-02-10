@@ -184,18 +184,6 @@
 			        mouseout: function() {
 			        	map.fireEvent("highlight", {highlightGroup: undefined});
 					//featureLayer.closePopup();
-			        },
-			        click: function() {
-						if (feature.properties.type == 'move') {
-							chart.brushRange(feature.properties.time);
-						} else {
-							var begins = [], ends = [];
-							feature.properties.times.forEach(function(v) {
-								begins.push(v[0]);
-								ends.push(v[1]);
-							});
-							chart.brushRange([d3.min(begins), d3.max(ends)]);
-						}
 			        }
 			    });
 		    },
