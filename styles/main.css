@@ -86,7 +86,11 @@ svg {
 
 .axis.minor line {
   stroke: #000;
-  opacity: 0.2;
+  opacity: 0.18;
+}
+
+.axis.minor .domain {
+  display: none;
 }
 
 .brush .extent {

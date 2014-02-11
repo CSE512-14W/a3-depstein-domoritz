@@ -32,7 +32,7 @@ var chart = (function() {
 
   var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.time.format("%H:%M")),
       xAxis2 = d3.svg.axis().scale(x2).orient("bottom").tickFormat(d3.time.format("%H:%M")),
-      xAxis3 = d3.svg.axis().scale(x).orient("bottom").tickFormat("").tickValues(dateArr).tickSize(-height),
+      xAxis3 = d3.svg.axis().scale(x).orient("bottom").tickFormat("").tickValues(dateArr).tickSize(-(height + location_height)),
       yAxis = d3.svg.axis().scale(y).orient("left");
       yAxisRight = d3.svg.axis().scale(y2).orient("right"),
       yAxisRight2 = d3.svg.axis().scale(y3).orient("left").ticks(5);
@@ -177,7 +177,7 @@ var chart = (function() {
             .attr("transform", "rotate(-90)")
               .attr("y", 6)
               .attr("dy", -40)
-              .attr("dx", -30)
+              .attr("dx", -10)
               .style("text-anchor", "end")
               .text("Heart rate (bpm)");
 
@@ -189,7 +189,7 @@ var chart = (function() {
             .attr("transform", "rotate(-90)")
               .attr("y", 6)
               .attr("dy", 30)
-              .attr("dx", -30)
+              .attr("dx", -10)
               .style("text-anchor", "end")
               .text("Steps");
 
@@ -201,7 +201,7 @@ var chart = (function() {
             .attr("transform", "rotate(-90)")
               .attr("y", 6)
               .attr("dy", -28)
-              .attr("dx", -30)
+              .attr("dx", -10)
               .style("text-anchor", "end")
               .text("Floors");
 
