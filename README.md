@@ -22,6 +22,7 @@ The data contained 24 hours (at 1-minute intervals) of:
 
 Access our visualization at [cse512-14w.github.io/a3-depstein-domoritz/](http://cse512-14w.github.io/a3-depstein-domoritz/) or download this repository and run `python -m SimpleHTTPServer 9000` and access this from http://localhost:9000/.
 
+The chart changes width according to the available width depending on the screen size. However, we did not optimize for small screen sizes so please view it on a large screen.
 
 ## Story Board
 
