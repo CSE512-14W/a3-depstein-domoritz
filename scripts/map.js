@@ -1,11 +1,14 @@
 var map = (function() {
-	var map = L.map('map', {
-		scrollWheelZoom: false
-	}).setView([47.6097, -122.3331], 13);
+	var osm = L.tileLayer('http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors,' +
+            'tiles from <a href="http://www.opencyclemap.org/">OpenTransportMap</a>'
+    });
 
-	var mapboxTiles = L.tileLayer('https://{s}.tiles.mapbox.com/v3/domoritz.h6ibh733/{z}/{x}/{y}.png', {
-	    attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
-	}).addTo(map);
+    var map = L.map('map', {
+        center: [47.6210, -122.3328],
+        zoom: 12,
+        layers: [osm]
+    });
 
 	var table = '<table class="table table-striped table-bordered table-condensed"><tbody>{body}</tbody></table>',
         row ='<tr><th>{key}</th><td>{value}</td></tr>',
